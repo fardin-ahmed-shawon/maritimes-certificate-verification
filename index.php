@@ -1,13 +1,3 @@
-<!-- fname
-fmname
-fsname
-dbirth
-dsnumber
-femail
-coc
-cop -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,6 +11,10 @@ cop -->
     body {
       background: #f4f6f9;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .navbar {
+      background: #2c2c74;
     }
 
     .navbar-brand img {
@@ -92,7 +86,7 @@ cop -->
 
 <body>
   <!-- Header -->
-  <nav class="navbar navbar-light bg-primary shadow-sm">
+  <nav class="navbar navbar-light shadow-sm">
     <div class="container d-flex justify-content-center">
       <a class="navbar-brand text-white fw-bold" href="#">
         <img src="./image/download.png" alt="logo">
