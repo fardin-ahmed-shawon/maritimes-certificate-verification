@@ -1,4 +1,3 @@
--- Create Table for applications
 CREATE TABLE applications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
