@@ -4,14 +4,13 @@ require 'header.php';
 ?>
 
 <div class="container my-5">
-    <h2 class="mb-4 text-center">Create New Certificate</h2>
 
     <form action="certificate_store.php" method="POST" enctype="multipart/form-data">
         <!-- Header Preview -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <img src="./image/certificatelogo.png" alt="Logo" style="width:100px">
+            <img src="../certificate_generate/image/certificatelogo.png" alt="Logo" style="width:100px">
             <h4>COOK ISLANDS SHIPS REGISTRY</h4>
-            <img src="./image/qrcode.png" alt="QR code" style="height:60px;">
+            <img src="../certificate_generate/image/qrcode.png" alt="QR code" style="height:60px;">
         </div>
 
         <!-- Certificate Type & Condition -->
@@ -129,7 +128,7 @@ require 'header.php';
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success btn-lg">Create Certificate</button>
+            <button type="submit" class="btn btn-success btn-lg">Generate Certificate</button>
         </div>
     </form>
 </div>

@@ -98,7 +98,7 @@ require 'header.php';
     <!-- Certificate List -->
     <br><br><h3 class="section-title">Certificate List</h3>
     <?php if (!empty($certificates)): ?>
-        <div class="table-responsive shadow-sm rounded">
+        <div class="table-responsive">
             <table class="table table-striped table-hover align-middle">
                 <thead>
                     <tr>
@@ -125,7 +125,7 @@ require 'header.php';
                         <td><?= $cert['date_of_expiry'] ?></td>
                         <td><?= $cert['created_at'] ?></td>
                         <td>
-                            <a href="../certificate_generate/certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-info text-white">Details</a>
+                            <a href="../certificate_generate/certificate.php?id=<?= $cert['certificate_id'] ?>" target="_blank" class="btn btn-sm btn-info text-white">Preview</a>
                             <a href="edit_certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
                             <a href="delete_certificate.php?id=<?= $cert['id'] ?>" 
                             class="btn btn-sm btn-danger"

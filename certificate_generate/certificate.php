@@ -8,8 +8,8 @@ if (!$certificate_id) {
 }
 
 // Fetch certificate data from the database
-$stmt = $conn->prepare("SELECT * FROM certificates WHERE id = ?");
-$stmt->bind_param("i", $certificate_id);
+$stmt = $conn->prepare("SELECT * FROM certificates WHERE certificate_id = ?");
+$stmt->bind_param("s", $certificate_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -31,10 +31,10 @@ $nationality = $cert['nationality'];
 $date_of_issue = $cert['date_of_issue'] ? date("d M Y", strtotime($cert['date_of_issue'])) : '';
 $date_of_expiry = $cert['date_of_expiry'] ? date("d M Y", strtotime($cert['date_of_expiry'])) : '';
 $place_of_issue = $cert['place_of_issue'];
-$img = $cert['profile_photo'] ?: './image/profile.png';
-$sign = $cert['signature_photo'] ?: './image/sign.png';
-$seal_img = $cert['registry_seal_img'] ?: './image/seal.png';
-$seal_sign = $cert['authority_signature_img'] ?: './image/auth-sign.png';
+$img = $cert['profile_photo'];
+$sign = $cert['signature_photo'];
+$seal_img = $cert['registry_seal_img'];
+$seal_sign = $cert['authority_signature_img'];
 $auth_title = $cert['title'];
 $auth_name = $cert['name'];
 
