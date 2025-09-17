@@ -6,7 +6,7 @@ require 'header.php';
 <?php
     // Fetch applications
     $applications = [];
-    $sql = "SELECT * FROM applications ORDER BY created_at DESC";
+    $sql = "SELECT * FROM applications ORDER BY created_at DESC LIMIT 10";
     $result = $conn->query($sql);
     if ($result && $result->num_rows > 0) {
         $applications = $result->fetch_all(MYSQLI_ASSOC);
@@ -14,7 +14,7 @@ require 'header.php';
 
     // Fetch certificates
     $certificates = [];
-    $sql2 = "SELECT * FROM certificates ORDER BY created_at DESC";
+    $sql2 = "SELECT * FROM certificates ORDER BY created_at DESC LIMIT 10";
     $result2 = $conn->query($sql2);
     if ($result2 && $result2->num_rows > 0) {
         $certificates = $result2->fetch_all(MYSQLI_ASSOC);
@@ -31,20 +31,20 @@ require 'header.php';
 
     <div class="row g-4 mb-4">
         <div class="col-md-6 col-lg-3">
-            <div class="card card-stats text-center bg-light">
+            <div class="card card-stats text-center bg-dark">
                 <div class="card-body">
-                    <h2><?= $totalApplications ?></h2>
+                    <h2 class="text-white"><?= $totalApplications ?></h2>
                     <br>
-                    <p class="text-muted"><b>Total Applications</b></p>
+                    <p class="text-white"><b>Total Applications</b></p>
                 </div>
             </div>
         </div>
         <div class="col-md-6 col-lg-3">
-            <div class="card card-stats text-center bg-light">
+            <div class="card card-stats text-center bg-dark">
                 <div class="card-body">
-                    <h2><?= $totalCertificates ?></h2>
+                    <h2 class="text-white"><?= $totalCertificates ?></h2>
                     <br>
-                    <p class="text-muted"><b>Total Certificates</b></p>
+                    <p class="text-white"><b>Total Certificates</b></p>
                 </div>
             </div>
         </div>
@@ -76,13 +76,8 @@ require 'header.php';
                         <td><?= htmlspecialchars($app['document_serial']) ?></td>
                         <td><?= $app['created_at'] ?></td>
                         <td>
-                            <a href="view_application.php?id=<?= $app['id'] ?>" class="btn btn-sm btn-info text-white">Details</a>
-                            <a href="edit_application.php?id=<?= $app['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="delete_application.php?id=<?= $app['id'] ?>" 
-                            class="btn btn-sm btn-danger"
-                            onclick="return confirm('Are you sure you want to delete this application?');">
-                            Delete
-                            </a>
+                            <a href="view_application.php?id=<?= $app['id'] ?>" class="btn btn-sm btn-dark text-white"><b>Details</b></a>
+                            <a href="edit_application.php?id=<?= $app['id'] ?>" class="btn btn-sm btn-warning"><b>Edit</b></a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -99,7 +94,7 @@ require 'header.php';
     <br><br><h3 class="section-title">Certificate List</h3>
     <?php if (!empty($certificates)): ?>
         <div class="table-responsive">
-            <table class="table table-striped table-hover align-middle">
+            <table class="table table-hover align-middle">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -125,13 +120,8 @@ require 'header.php';
                         <td><?= $cert['date_of_expiry'] ?></td>
                         <td><?= $cert['created_at'] ?></td>
                         <td>
-                            <a href="../certificate_generate/certificate.php?id=<?= $cert['certificate_id'] ?>" target="_blank" class="btn btn-sm btn-info text-white">Preview</a>
-                            <a href="edit_certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="delete_certificate.php?id=<?= $cert['id'] ?>" 
-                            class="btn btn-sm btn-danger"
-                            onclick="return confirm('Are you sure you want to delete this certificate?');">
-                            Delete
-                            </a>
+                            <a href="../certificate_generate/certificate.php?id=<?= $cert['certificate_id'] ?>" target="_blank" class="btn btn-sm btn-dark text-white"><b>Preview</b></a>
+                            <a href="edit_certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-warning"><b>Edit</b></a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

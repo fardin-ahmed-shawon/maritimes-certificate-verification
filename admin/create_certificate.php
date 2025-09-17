@@ -10,7 +10,7 @@ require 'header.php';
         <div class="d-flex justify-content-between align-items-center mb-3">
             <img src="../certificate_generate/image/certificatelogo.png" alt="Logo" style="width:100px">
             <h4>COOK ISLANDS SHIPS REGISTRY</h4>
-            <img src="../certificate_generate/image/qrcode.png" alt="QR code" style="height:60px;">
+            <div style="text-align: center; display: flex; align-items: center; justify-content: center; width: 100px; height: 100px; border: 1px solid #ccc">QR CODE AREA</div>
         </div>
 
         <!-- Certificate Type & Condition -->
