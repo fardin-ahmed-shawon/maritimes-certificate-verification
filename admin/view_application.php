@@ -1,5 +1,6 @@
 <?php
-require '../dbConnection.php';
+$page_title = "View Application";
+require 'header.php';
 
 // Check if ID exists
 $appId = $_GET['id'] ?? null;
@@ -22,27 +23,15 @@ if ($result->num_rows === 0) {
 $app = $result->fetch_assoc();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Application Details</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-  <?php
-    include 'nav.php';
-  ?>
-
-  <!-- Details Section -->
+<!-------------------------->
+<!-----START MAIN AREA------>
+<!-------------------------->
+<!-- Details Section -->
   <div class="details-section">
     <h3>Application Details</h3>
 
     <!-- Seafarer Info -->
-    <div class="section-title">Seafarer Information</div>
+    <div class="section-title">Seafarer Information</div><br>
     <div class="row">
       <div class="col-md-6 info-item">
         <label>First Name:</label>
@@ -71,28 +60,52 @@ $app = $result->fetch_assoc();
     </div>
 
     <!-- Supporting Docs -->
-    <div class="section-title">Supporting Documents</div>
+    <div class="section-title">Supporting Documents</div><br>
     <div class="row">
       <div class="col-md-6 info-item">
         <label>Certificate of Competency:</label>
-        <?php if (!empty($app['certificate_of_competency'])): ?>
-          <a href="../uploads/<?= htmlspecialchars($app['certificate_of_competency']) ?>" target="_blank" class="btn btn-sm btn-primary">View File</a>
+        <?php if (!empty($app['coc_file'])): 
+            $cocFile = htmlspecialchars($app['coc_file']);
+            $cocPath = "../" . $cocFile;
+            $cocExt = strtolower(pathinfo($cocFile, PATHINFO_EXTENSION));
+        ?>
+          <div class="mt-2">
+            <?php if (in_array($cocExt, ['jpg','jpeg','png','gif','webp'])): ?>
+              <img src="<?= $cocPath ?>" alt="Certificate of Competency" class="img-fluid rounded mb-2" style="max-height:250px;">
+            <?php endif; ?>
+            <br>
+            <a href="<?= $cocPath ?>" target="_blank" class="btn btn-sm btn-primary">View</a>
+            <a href="<?= $cocPath ?>" download class="btn btn-sm btn-success">Download</a>
+          </div>
         <?php else: ?>
           <span class="text-muted">Not Uploaded</span>
         <?php endif; ?>
       </div>
+
       <div class="col-md-6 info-item">
         <label>Certificate of Proficiency:</label>
-        <?php if (!empty($app['certificate_of_proficiency'])): ?>
-          <a href="../uploads/<?= htmlspecialchars($app['certificate_of_proficiency']) ?>" target="_blank" class="btn btn-sm btn-primary">View File</a>
+        <?php if (!empty($app['cop_file'])): 
+            $copFile = htmlspecialchars($app['cop_file']);
+            $copPath = "../" . $copFile;
+            $copExt = strtolower(pathinfo($copFile, PATHINFO_EXTENSION));
+        ?>
+          <div class="mt-2">
+            <?php if (in_array($copExt, ['jpg','jpeg','png','gif','webp'])): ?>
+              <img src="<?= $copPath ?>" alt="Certificate of Proficiency" class="img-fluid rounded mb-2" style="max-height:250px;">
+            <?php endif; ?>
+            <br>
+            <a href="<?= $copPath ?>" target="_blank" class="btn btn-sm btn-primary">View</a>
+            <a href="<?= $copPath ?>" download class="btn btn-sm btn-success">Download</a>
+          </div>
         <?php else: ?>
           <span class="text-muted">Not Uploaded</span>
         <?php endif; ?>
       </div>
     </div>
 
+
     <!-- Meta Info -->
-    <div class="section-title">Other Information</div>
+    <div class="section-title">Other Information</div><br>
     <div class="row">
       <div class="col-md-6 info-item">
         <label>Application ID:</label>
@@ -106,10 +119,13 @@ $app = $result->fetch_assoc();
 
     <!-- Back Button -->
     <div class="text-center mt-4">
-      <a href="index.php" class="btn-back">← Back to Dashboard</a>
+      <a href="index.php" class="btn btn-back">← Back to Dashboard</a>
     </div>
   </div>
+<!-------------------------->
+<!----- END MAIN AREA------>
+<!-------------------------->
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php
+require 'footer.php';
+?>

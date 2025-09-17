@@ -116,6 +116,7 @@ if (!isset($_SESSION['user_id'])) {
         <div>
             <a href="create_certificate.php" class="btn btn-primary btn-custom me-2"><b>+ Create Certificate</b></a>
             <a href="../index.php" class="btn btn-success btn-custom"><b>+ New Application</b></a>
+            <a href="index.php" class="btn btn-dark btn-custom"><b>Dashboard</b></a>
         </div>
     </div>
 
