@@ -1,90 +1,34 @@
 <?php
-require '../dbConnection.php';
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Fetch applications
-$applications = [];
-$sql = "SELECT * FROM applications ORDER BY created_at DESC";
-$result = $conn->query($sql);
-if ($result && $result->num_rows > 0) {
-    $applications = $result->fetch_all(MYSQLI_ASSOC);
-}
-
-// Fetch certificates
-$certificates = [];
-$sql2 = "SELECT * FROM certificates ORDER BY created_at DESC";
-$result2 = $conn->query($sql2);
-if ($result2 && $result2->num_rows > 0) {
-    $certificates = $result2->fetch_all(MYSQLI_ASSOC);
-}
-
-// Stats
-$totalApplications = count($applications);
-$totalCertificates = count($certificates);
+$page_title = "Dashboard";
+require 'header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <!-- Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background: #f4f6f9;
-            font-family: "Poppins", sans-serif;
-        }
-        .dashboard-header {
-            margin: 30px 0;
-        }
-        .card-stats {
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-        }
-        .card-stats .card-body {
-            padding: 25px;
-        }
-        .card-stats h2 {
-            font-weight: 700;
-            margin: 0;
-        }
-        .btn-custom {
-            border-radius: 8px;
-        }
-        table {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        th {
-            background: #0d6efd;
-            color: #fff;
-        }
-        .section-title {
-            margin-top: 40px;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
 
-<?php include 'nav.php' ?>
+<?php
+    // Fetch applications
+    $applications = [];
+    $sql = "SELECT * FROM applications ORDER BY created_at DESC";
+    $result = $conn->query($sql);
+    if ($result && $result->num_rows > 0) {
+        $applications = $result->fetch_all(MYSQLI_ASSOC);
+    }
 
-<div class="container">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center dashboard-header">
-        <h1 class="fw-bold">Dashboard</h1>
-        <div>
-            <a href="create_certificate.php" class="btn btn-primary btn-custom me-2"><b>+ Create Certificate</b></a>
-            <a href="../index.php" class="btn btn-success btn-custom"><b>+ New Application</b></a>
-        </div>
-    </div>
+    // Fetch certificates
+    $certificates = [];
+    $sql2 = "SELECT * FROM certificates ORDER BY created_at DESC";
+    $result2 = $conn->query($sql2);
+    if ($result2 && $result2->num_rows > 0) {
+        $certificates = $result2->fetch_all(MYSQLI_ASSOC);
+    }
 
-    <!-- Stats Row -->
+    // Stats
+    $totalApplications = count($applications);
+    $totalCertificates = count($certificates);
+?>
+
+<!-------------------------->
+<!-----START MAIN AREA------>
+<!-------------------------->
+
     <div class="row g-4 mb-4">
         <div class="col-md-6 col-lg-3">
             <div class="card card-stats text-center bg-light">
@@ -104,7 +48,6 @@ $totalCertificates = count($certificates);
                 </div>
             </div>
         </div>
-        <!-- You can add more stats later (like pending, expired, etc.) -->
     </div><br>
 
     <!-- Application List -->
@@ -200,9 +143,10 @@ $totalCertificates = count($certificates);
         <div class="alert alert-warning mt-3">No certificates found.</div>
     <?php endif; ?>
 
-</div>
+<!-------------------------->
+<!----- END MAIN AREA------>
+<!-------------------------->
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php
+require 'footer.php';
+?>
