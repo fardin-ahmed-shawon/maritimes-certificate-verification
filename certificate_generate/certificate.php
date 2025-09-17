@@ -38,6 +38,8 @@ $seal_sign = $cert['authority_signature_img'];
 $auth_title = $cert['title'];
 $auth_name = $cert['name'];
 
+$certificate_url = $site_url.'certificate_generate/certificate.php?id='. $certificate_id;
+
 $stmt->close();
 ?>
 <!DOCTYPE html>
@@ -48,6 +50,7 @@ $stmt->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Certificate - <?= htmlspecialchars($full_name) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         .certificate-area {
             margin: 20px;
@@ -97,7 +100,9 @@ $stmt->close();
         <div class="certificate-container pt-5 pb-2 d-flex justify-content-between align-items-center">
             <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png">
             <h1 class="mt-2">COOK ISLANDS SHIPS REGISTRY</h1>
-            <img src="./image/qrcode.png" alt="QR code" style="height:60px;">
+            <!-- <img src="./image/qrcode.png" alt="QR code" style="height:60px;"> -->
+            <div id="qrcode" style="height:100px;"></div>
+
         </div>
 
         <!-- Title -->
@@ -214,5 +219,23 @@ $stmt->close();
             </table>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+    const certificateURL = "<?= $certificate_url ?>"; 
+
+    const qrcodeContainer = document.getElementById("qrcode");
+    qrcodeContainer.innerHTML = "";
+
+    new QRCode(qrcodeContainer, {
+        text: certificateURL,
+        width: 100,
+        height: 100,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+</script>
+
 </body>
 </html>
