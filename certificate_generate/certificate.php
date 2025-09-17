@@ -32,8 +32,13 @@ $auth_name = "Tiare Alice Story";
     <title>Certificate</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        .certificate-area {
+            margin: 20px;
+            padding: 0 23px;
+            border: 1px solid #ccc;
+        }
         .certificate-container {
-            max-width: 1000px;
+            /* max-width: 1000px; */
             margin: 0 auto;
         }
 
@@ -70,11 +75,11 @@ $auth_name = "Tiare Alice Story";
 </head>
 
 <body>
-    <div class="container mx-auto">
+    <div class="container mx-auto certificate-area">
         <!-- Header -->
-        <div class="certificate-container ps-5 pt-5 pb-2 d-flex justify-content-between align-items-center">
-            <img src="./image/certificatelogo.png" alt="certificatelogo.png" style="height:60px;">
-            <h3 class="mt-2">COOK ISLANDS SHIPS REGISTRY</h3>
+        <div class="certificate-container pt-5 pb-2 d-flex justify-content-between align-items-center">
+            <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png" style="height:60px;">
+            <h1 class="mt-2">COOK ISLANDS SHIPS REGISTRY</h1>
             <img src="./image/qrcode.png" alt="QR code" style="height:60px;">
         </div>
 
@@ -102,7 +107,7 @@ $auth_name = "Tiare Alice Story";
                 <tr class="bg-color text-white">
                     <th>Title of Training</th>
                     <th>STCW Regulation</th>
-                    <th>Section</th>
+                    <th>Section of STCW Code</th>
                 </tr>
                 <tr>
                     <td><?= $training ?></td>
@@ -112,23 +117,23 @@ $auth_name = "Tiare Alice Story";
             </table>
         </div>
         <!-- Profile and sign   -->
-<div class="">
-    <p>Photograph & Signature of the Holder</p>
+        <div style="border: 1px solid #ccc; padding: 12px">
+            <p>Photograph & Signature of the Holder</p>
             <div class="mt-3 d-flex">
 
-            <tr>
-                <td colspan="2" class="">
+                <tr>
+                    <td colspan="2" class="">
 
-                    <img src="<?= $img ?>" alt="Seal" style="height:120px;">
-                </td>
-            </tr>
-            <tr class="">
-                <td colspan="2" class=" ">
-                    <img src="<?= $sign ?>" alt="Authorized Signature" style="height:60px;">
-                </td>
-            </tr>
+                        <img src="<?= $img ?>" alt="Seal" style="height:120px;">
+                    </td>
+                </tr>
+                <tr class="">
+                    <td colspan="2" class=" ">
+                        <img src="<?= $sign ?>" alt="Authorized Signature" style="height:60px;">
+                    </td>
+                </tr>
+            </div>
         </div>
-</div>
         <!-- Holder details -->
         <div class="mt-3">
             <table>
