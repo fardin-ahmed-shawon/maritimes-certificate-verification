@@ -3,33 +3,50 @@ require '../dbConnection.php';
 
 $certificate_id = $_GET['id'] ?? '';
 
-// Fetch The Certificate Information
-$condition = "Issued under the authority of the Government of the Cook Islands. THIS IS TO CERTIFY that the lawful holder of this certificate has met the requirements laid down in the International Convention on Standards of Training, Certification and Watchkeeping for Seafarers (STCW), 1978, as amended, and the standards of competency specified in the STCW Code as amended.";
-$training = "SHIP SECURITY OFFICER";
-$regulations = "Reg. VI/5";
-$sections = "Section A-VI/5";
-$full_name = "Amin Miya";
-$date_of_birth = "21 Aug 1998";
-$certificate_number = "C-COP-23116";
-$nationality = "Bangladeshi";
-$date_of_issue = "31 Jan 2024";
-$date_of_expiry = "31 Jan 2029";
-$place_of_issue = "Rarotonga, Cook Islands";
-$img = "./image/profile.png";
-$sign = "./image/sign.png";
-$seal_img = "./image/seal.png";
-$seal_sign = "./image/auth-sign.png";
-$auth_title = "Deputy Registrar CIDR - 93";
-$auth_name = "Tiare Alice Story";
-?>
+if (!$certificate_id) {
+    die("No certificate ID provided.");
+}
 
+// Fetch certificate data from the database
+$stmt = $conn->prepare("SELECT * FROM certificates WHERE id = ?");
+$stmt->bind_param("i", $certificate_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows === 0) {
+    die("Certificate not found.");
+}
+
+$cert = $result->fetch_assoc();
+
+// Assign variables
+$condition = $cert['policy_text'];
+$training = $cert['title_of_training'];
+$regulations = $cert['stcw_regulation'];
+$sections = $cert['section_stcw_code'];
+$full_name = $cert['full_name'];
+$date_of_birth = $cert['date_of_birth'] ? date("d M Y", strtotime($cert['date_of_birth'])) : '';
+$certificate_number = $cert['certificate_number'];
+$nationality = $cert['nationality'];
+$date_of_issue = $cert['date_of_issue'] ? date("d M Y", strtotime($cert['date_of_issue'])) : '';
+$date_of_expiry = $cert['date_of_expiry'] ? date("d M Y", strtotime($cert['date_of_expiry'])) : '';
+$place_of_issue = $cert['place_of_issue'];
+$img = $cert['profile_photo'] ?: './image/profile.png';
+$sign = $cert['signature_photo'] ?: './image/sign.png';
+$seal_img = $cert['registry_seal_img'] ?: './image/seal.png';
+$seal_sign = $cert['authority_signature_img'] ?: './image/auth-sign.png';
+$auth_title = $cert['title'];
+$auth_name = $cert['name'];
+
+$stmt->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate</title>
+    <title>Certificate - <?= htmlspecialchars($full_name) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .certificate-area {
@@ -37,8 +54,8 @@ $auth_name = "Tiare Alice Story";
             padding: 0 23px;
             border: 1px solid #ccc;
         }
+
         .certificate-container {
-            /* max-width: 1000px; */
             margin: 0 auto;
         }
 
@@ -78,7 +95,7 @@ $auth_name = "Tiare Alice Story";
     <div class="container mx-auto certificate-area">
         <!-- Header -->
         <div class="certificate-container pt-5 pb-2 d-flex justify-content-between align-items-center">
-            <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png" style="height:60px;">
+            <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png">
             <h1 class="mt-2">COOK ISLANDS SHIPS REGISTRY</h1>
             <img src="./image/qrcode.png" alt="QR code" style="height:60px;">
         </div>
@@ -93,10 +110,10 @@ $auth_name = "Tiare Alice Story";
             <table>
                 <tr>
                     <th>CERTIFICATE TYPE:</th>
-                    <th><?= $training ?></th>
+                    <th><?= htmlspecialchars($training) ?></th>
                 </tr>
                 <tr>
-                    <td colspan="2"><?= $condition ?></td>
+                    <td colspan="2"><?= htmlspecialchars($condition) ?></td>
                 </tr>
             </table>
         </div>
@@ -110,48 +127,40 @@ $auth_name = "Tiare Alice Story";
                     <th>Section of STCW Code</th>
                 </tr>
                 <tr>
-                    <td><?= $training ?></td>
-                    <td><?= $regulations ?></td>
-                    <td><?= $sections ?></td>
+                    <td><?= htmlspecialchars($training) ?></td>
+                    <td><?= htmlspecialchars($regulations) ?></td>
+                    <td><?= htmlspecialchars($sections) ?></td>
                 </tr>
             </table>
         </div>
-        <!-- Profile and sign   -->
+
+        <!-- Profile and sign -->
         <div style="border: 1px solid #ccc; padding: 12px">
             <p>Photograph & Signature of the Holder</p>
-            <div class="mt-3 d-flex">
-
-                <tr>
-                    <td colspan="2" class="">
-
-                        <img src="<?= $img ?>" alt="Seal" style="height:120px;">
-                    </td>
-                </tr>
-                <tr class="">
-                    <td colspan="2" class=" ">
-                        <img src="<?= $sign ?>" alt="Authorized Signature" style="height:60px;">
-                    </td>
-                </tr>
+            <div class="mt-3 d-flex gap-3">
+                <img src="../admin<?= htmlspecialchars($img) ?>" alt="Profile Photo" style="height:120px;">
+                <img src="../admin<?= htmlspecialchars($sign) ?>" alt="Signature Photo" style="height:60px;">
             </div>
         </div>
+
         <!-- Holder details -->
         <div class="mt-3">
             <table>
                 <tr>
-                    <td class="label">Full Name of the Holder of the Certificate:</td>
-                    <td><?= $full_name ?></td>
+                    <td class="label">Full Name of the Holder:</td>
+                    <td><?= htmlspecialchars($full_name) ?></td>
                 </tr>
                 <tr>
-                    <td class="label">Date of Birth of the Holder of the Certificate:</td>
-                    <td><?= $date_of_birth ?></td>
+                    <td class="label">Date of Birth:</td>
+                    <td><?= htmlspecialchars($date_of_birth) ?></td>
                 </tr>
                 <tr>
                     <td class="label">Certificate Number:</td>
-                    <td><?= $certificate_number ?></td>
+                    <td><?= htmlspecialchars($certificate_number) ?></td>
                 </tr>
                 <tr>
                     <td class="label">Nationality:</td>
-                    <td><?= $nationality ?></td>
+                    <td><?= htmlspecialchars($nationality) ?></td>
                 </tr>
             </table>
         </div>
@@ -164,47 +173,46 @@ $auth_name = "Tiare Alice Story";
                 </tr>
                 <tr>
                     <td class="label">Date of Issue:</td>
-                    <td><?= $date_of_issue ?></td>
+                    <td><?= htmlspecialchars($date_of_issue) ?></td>
                 </tr>
                 <tr>
                     <td class="label">Date of Expiry:</td>
-                    <td><?= $date_of_expiry ?></td>
+                    <td><?= htmlspecialchars($date_of_expiry) ?></td>
                 </tr>
                 <tr>
                     <td class="label">Place of Issue:</td>
-                    <td><?= $place_of_issue ?></td>
+                    <td><?= htmlspecialchars($place_of_issue) ?></td>
                 </tr>
             </table>
         </div>
 
-        <!-- Seal & Signature in full-width table -->
+        <!-- Seal & Signature -->
         <div class="mt-3">
             <table>
                 <tr>
                     <th colspan="2" class="bg-color text-white"></th>
                 </tr>
                 <tr>
-                    <td colspan="2" class="">
-                        <img src="<?= $seal_img ?>" alt="Seal" style="height:120px;">
+                    <td colspan="2">
+                        <img src="../admin<?= htmlspecialchars($seal_img) ?>" alt="Registry Seal" style="height:120px;">
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="">
+                    <td colspan="2">
                         <h6 class="fw-bold border-bottom pb-1">SIGNATURE</h6>
-                        <img src="<?= $seal_sign ?>" alt="Authorized Signature" style="height:60px;">
+                        <img src="../admin<?= htmlspecialchars($seal_sign) ?>" alt="Authorized Signature" style="height:60px;">
                     </td>
                 </tr>
                 <tr>
                     <td class="label">Title</td>
-                    <td><?= $auth_title ?></td>
+                    <td><?= htmlspecialchars($auth_title) ?></td>
                 </tr>
                 <tr>
                     <td class="label">Name</td>
-                    <td><?= $auth_name ?></td>
+                    <td><?= htmlspecialchars($auth_name) ?></td>
                 </tr>
             </table>
         </div>
     </div>
 </body>
-
 </html>

@@ -110,7 +110,7 @@ require 'header.php';
                         <th>Date of Issue</th>
                         <th>Date of Expiry</th>
                         <th>Created At</th>
-                        <th>Action</th> <!-- Added -->
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -125,7 +125,7 @@ require 'header.php';
                         <td><?= $cert['date_of_expiry'] ?></td>
                         <td><?= $cert['created_at'] ?></td>
                         <td>
-                            <a href="view_certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-info text-white">Details</a>
+                            <a href="../certificate_generate/certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-info text-white">Details</a>
                             <a href="edit_certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
                             <a href="delete_certificate.php?id=<?= $cert['id'] ?>" 
                             class="btn btn-sm btn-danger"
