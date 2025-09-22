@@ -206,6 +206,8 @@ $stmt->close();
         </tr>
       </table>
     </div>
+    <br>
+    <p class="mb-0">COOK ISLANDS CERTIFICATE OF COMPETENCY <?= htmlspecialchars($certificate_number) ?>-<?= htmlspecialchars($full_name) ?></p>
   </div>
 
   <!-- QR Code -->
