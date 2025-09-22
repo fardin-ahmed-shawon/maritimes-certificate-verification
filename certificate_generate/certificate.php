@@ -1,21 +1,15 @@
-<?php
-require '../dbConnection.php';
+<?php 
+require '../dbConnection.php';  
+$certificate_id = $_GET['id'] ?? '';  
 
-$certificate_id = $_GET['id'] ?? '';
+if (!$certificate_id) { die("No certificate ID provided."); }  
 
-if (!$certificate_id) {
-    die("No certificate ID provided.");
-}
-
-// Fetch certificate data from the database
 $stmt = $conn->prepare("SELECT * FROM certificates WHERE certificate_id = ?");
 $stmt->bind_param("s", $certificate_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
-if ($result->num_rows === 0) {
-    die("Certificate not found.");
-}
+if ($result->num_rows === 0) { die("Certificate not found."); }  
 
 $cert = $result->fetch_assoc();
 
@@ -40,201 +34,219 @@ $auth_name = $cert['name'];
 
 $certificate_url = $site_url.'certificate_generate/certificate.php?id='. $certificate_id;
 
-$stmt->close();
+$stmt->close(); 
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate - <?= htmlspecialchars($full_name) ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <style>
-        .certificate-area {
-            margin: 20px;
-            padding: 0 23px;
-            border: 1px solid #ccc;
-        }
-
-        .certificate-container {
-            margin: 0 auto;
-        }
-
-        .bg-color {
-            background-color: #0078D7;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 10px;
-        }
-
-        th {
-            text-align: center;
-        }
-
-        td {
-            text-align: left;
-        }
-
-        .label {
-            background-color: #d9e8f7;
-            font-weight: bold;
-            width: 40%;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate - <?= htmlspecialchars($full_name) ?></title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background: #f9f9f9;
+    }
+    .certificate-area {
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background: #fff;
+      max-width: 1100px; /* Keep fixed width for PDF */
+    }
+    .bg-color {
+      background-color: #0078D7;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      /* margin-bottom: 20px; */
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 10px;
+    }
+    th { text-align: center; }
+    td { text-align: left; }
+    .label {
+      background-color: #d9e8f7;
+      font-weight: bold;
+      width: 40%;
+    }
+    .download-btn {
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container mx-auto certificate-area">
-        <!-- Header -->
-        <div class="certificate-container pt-5 pb-2 d-flex justify-content-between align-items-center">
-            <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png">
-            <h1 class="mt-2">COOK ISLANDS SHIPS REGISTRY</h1>
-            <!-- <img src="./image/qrcode.png" alt="QR code" style="height:60px;"> -->
-            <div id="qrcode" style="height:100px;"></div>
+  <div class="download-btn">
+    <button id="downloadPDF" class="btn btn-info">Download PDF</button>
+  </div>
 
-        </div>
-
-        <!-- Title -->
-        <div class="mt-5 bg-color text-white ps-2 py-1 text-center">
-            <h3 class="mb-0">COOK ISLANDS CERTIFICATE OF PROFICIENCY</h3>
-        </div>
-
-        <!-- First table -->
-        <div class="mt-3">
-            <table>
-                <tr>
-                    <th>CERTIFICATE TYPE:</th>
-                    <th><?= htmlspecialchars($training) ?></th>
-                </tr>
-                <tr>
-                    <td colspan="2"><?= htmlspecialchars($condition) ?></td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Second table -->
-        <div class="mt-3">
-            <table>
-                <tr class="bg-color text-white">
-                    <th>Title of Training</th>
-                    <th>STCW Regulation</th>
-                    <th>Section of STCW Code</th>
-                </tr>
-                <tr>
-                    <td><?= htmlspecialchars($training) ?></td>
-                    <td><?= htmlspecialchars($regulations) ?></td>
-                    <td><?= htmlspecialchars($sections) ?></td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Profile and sign -->
-        <div style="border: 1px solid #ccc; padding: 12px">
-            <p>Photograph & Signature of the Holder</p>
-            <div class="mt-3 d-flex gap-3">
-                <img src="../admin<?= htmlspecialchars($img) ?>" alt="Profile Photo" style="height:120px;">
-                <img src="../admin<?= htmlspecialchars($sign) ?>" alt="Signature Photo" style="height:60px;">
-            </div>
-        </div>
-
-        <!-- Holder details -->
-        <div class="mt-3">
-            <table>
-                <tr>
-                    <td class="label">Full Name of the Holder:</td>
-                    <td><?= htmlspecialchars($full_name) ?></td>
-                </tr>
-                <tr>
-                    <td class="label">Date of Birth:</td>
-                    <td><?= htmlspecialchars($date_of_birth) ?></td>
-                </tr>
-                <tr>
-                    <td class="label">Certificate Number:</td>
-                    <td><?= htmlspecialchars($certificate_number) ?></td>
-                </tr>
-                <tr>
-                    <td class="label">Nationality:</td>
-                    <td><?= htmlspecialchars($nationality) ?></td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Issuing authority -->
-        <div class="mt-3">
-            <table>
-                <tr>
-                    <th colspan="2" class="bg-color text-white">Issuing Authority</th>
-                </tr>
-                <tr>
-                    <td class="label">Date of Issue:</td>
-                    <td><?= htmlspecialchars($date_of_issue) ?></td>
-                </tr>
-                <tr>
-                    <td class="label">Date of Expiry:</td>
-                    <td><?= htmlspecialchars($date_of_expiry) ?></td>
-                </tr>
-                <tr>
-                    <td class="label">Place of Issue:</td>
-                    <td><?= htmlspecialchars($place_of_issue) ?></td>
-                </tr>
-            </table>
-        </div>
-
-        <!-- Seal & Signature -->
-        <div class="mt-3">
-            <table>
-                <tr>
-                    <th colspan="2" class="bg-color text-white"></th>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <img src="../admin<?= htmlspecialchars($seal_img) ?>" alt="Registry Seal" style="height:120px;">
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <h6 class="fw-bold border-bottom pb-1">SIGNATURE</h6>
-                        <img src="../admin<?= htmlspecialchars($seal_sign) ?>" alt="Authorized Signature" style="height:60px;">
-                    </td>
-                </tr>
-                <tr>
-                    <td class="label">Title</td>
-                    <td><?= htmlspecialchars($auth_title) ?></td>
-                </tr>
-                <tr>
-                    <td class="label">Name</td>
-                    <td><?= htmlspecialchars($auth_name) ?></td>
-                </tr>
-            </table>
-        </div>
+  <div id="certificateContent" class="certificate-area">
+    <!-- Header -->
+    <div class="certificate-container pt-5 pb-2 d-flex justify-content-between align-items-center">
+      <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png">
+      <h1 class="mt-2 text-center flex-grow-1">COOK ISLANDS SHIPS REGISTRY</h1>
+      <div id="qrcode" style="height:100px;"></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script>
-    const certificateURL = "<?= $certificate_url ?>"; 
+    <!-- Title -->
+    <div class="mt-3 bg-color text-white ps-2 py-1 text-center">
+      <h3 class="mb-0">COOK ISLANDS CERTIFICATE OF PROFICIENCY</h3>
+    </div>
 
-    const qrcodeContainer = document.getElementById("qrcode");
-    qrcodeContainer.innerHTML = "";
+    <!-- First table -->
+    <div class="mt-3">
+      <table>
+        <tr>
+          <th>CERTIFICATE TYPE:</th>
+          <th><?= htmlspecialchars($training) ?></th>
+        </tr>
+        <tr>
+          <td colspan="2"><?= htmlspecialchars($condition) ?></td>
+        </tr>
+      </table>
+    </div>
 
-    new QRCode(qrcodeContainer, {
-        text: certificateURL,
-        width: 100,
-        height: 100,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
+    <!-- Second table -->
+    <div class="mt-3">
+      <table>
+        <tr class="bg-color text-white">
+          <th>Title of Training</th>
+          <th>STCW Regulation</th>
+          <th>Section of STCW Code</th>
+        </tr>
+        <tr>
+          <td><?= htmlspecialchars($training) ?></td>
+          <td><?= htmlspecialchars($regulations) ?></td>
+          <td><?= htmlspecialchars($sections) ?></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Profile and sign -->
+    <div style="border: 1px solid #ccc; padding: 12px">
+      <p>Photograph & Signature of the Holder</p>
+      <div class="mt-3 d-flex gap-3">
+        <img src="../admin/<?= htmlspecialchars($img) ?>" alt="Profile Photo" style="height:120px;">
+        <img src="../admin/<?= htmlspecialchars($sign) ?>" alt="Signature Photo" style="height:60px;">
+      </div>
+    </div>
+
+    <!-- Holder details -->
+    <div class="mt-3">
+      <table>
+        <tr>
+          <td class="label">Full Name of the Holder:</td>
+          <td><?= htmlspecialchars($full_name) ?></td>
+        </tr>
+        <tr>
+          <td class="label">Date of Birth:</td>
+          <td><?= htmlspecialchars($date_of_birth) ?></td>
+        </tr>
+        <tr>
+          <td class="label">Certificate Number:</td>
+          <td><?= htmlspecialchars($certificate_number) ?></td>
+        </tr>
+        <tr>
+          <td class="label">Nationality:</td>
+          <td><?= htmlspecialchars($nationality) ?></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Issuing authority -->
+    <div class="mt-3">
+      <table>
+        <tr>
+          <th colspan="2" class="bg-color text-white">Issuing Authority</th>
+        </tr>
+        <tr>
+          <td class="label">Date of Issue:</td>
+          <td><?= htmlspecialchars($date_of_issue) ?></td>
+        </tr>
+        <tr>
+          <td class="label">Date of Expiry:</td>
+          <td><?= htmlspecialchars($date_of_expiry) ?></td>
+        </tr>
+        <tr>
+          <td class="label">Place of Issue:</td>
+          <td><?= htmlspecialchars($place_of_issue) ?></td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Seal & Signature -->
+    <div class="mt-3">
+      <table>
+        <tr>
+          <th colspan="2" class="bg-color text-white"></th>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <img src="../admin/<?= htmlspecialchars($seal_img) ?>" alt="Registry Seal" style="height:120px;">
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <h6 class="fw-bold border-bottom pb-1">SIGNATURE</h6>
+            <img src="../admin/<?= htmlspecialchars($seal_sign) ?>" alt="Authorized Signature" style="height:60px;">
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Title</td>
+          <td><?= htmlspecialchars($auth_title) ?></td>
+        </tr>
+        <tr>
+          <td class="label">Name</td>
+          <td><?= htmlspecialchars($auth_name) ?></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- QR Code -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script>
+    const certificateURL = "<?= $certificate_url ?>";
+    new QRCode(document.getElementById("qrcode"), {
+      text: certificateURL,
+      width: 100,
+      height: 100,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
     });
+  </script>
+
+  <!-- PDF Export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  document.getElementById("downloadPDF").addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const element = document.getElementById("certificateContent");
+
+    html2canvas(element, { scale: 2 }).then(canvas => {
+      const imgData = canvas.toDataURL("image/png");
+
+      // A4 size in mm
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      // Convert canvas to fit A4 dimensions
+      const imgWidth = pageWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+
+      pdf.save("Certificate.pdf");
+    });
+  });
 </script>
 
 </body>
