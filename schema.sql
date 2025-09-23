@@ -16,11 +16,6 @@ CREATE TABLE certificates (
     certificate_id VARCHAR(100) NOT NULL,
     certificate_type VARCHAR(100) NOT NULL,
     policy_text TEXT,
-
-    title_one_id INT NOT NULL,
-    title_two_id INT NOT NULL,
-    title_three_id INT NOT NULL,
-
     profile_photo VARCHAR(255),
     signature_photo VARCHAR(255),
     full_name VARCHAR(255) NOT NULL,

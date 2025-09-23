@@ -213,6 +213,11 @@ $stmt->close();
     <?php
       if ($total_title_three > 0) {
         ?>
+        <div class="my-3">
+          <div style="background-color: #d9e8f7; padding: 8px; border: 1px solid #000000ff;">
+            The lawful holder of this certificate may serve in the following capacity or capacities specified in the applicable safe manning requirements of the Administration:
+          </div>
+        </div>
           <div class="my-3">
             <table>
               <tr class="bg-color text-white">
