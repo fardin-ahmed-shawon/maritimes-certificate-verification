@@ -15,9 +15,13 @@ $cert = $result->fetch_assoc();
 
 // Assign variables
 $condition = $cert['policy_text'];
-$training = $cert['title_of_training'];
-$regulations = $cert['stcw_regulation'];
-$sections = $cert['section_stcw_code'];
+
+$type = $cert['certificate_type'] ?? '';
+
+// $training = $cert['title_of_training'];
+// $regulations = $cert['stcw_regulation'];
+// $sections = $cert['section_stcw_code'] ;
+
 $full_name = $cert['full_name'];
 $date_of_birth = $cert['date_of_birth'] ? date("d M Y", strtotime($cert['date_of_birth'])) : '';
 $certificate_number = $cert['certificate_number'];
@@ -34,6 +38,33 @@ $auth_name = $cert['name'];
 
 $certificate_url = $site_url.'certificate_generate/certificate.php?id='. $certificate_id;
 
+// Fetch multiple title one if exists
+$stmt = $conn->prepare("SELECT * FROM titles_one WHERE certificate_id = ?");
+$stmt->bind_param("i", $cert['id']);
+$stmt->execute();
+$title_one_result = $stmt->get_result();
+$total_title_one = $title_one_result->num_rows;
+// END
+
+
+// Fetch multiple title two if exists
+$stmt = $conn->prepare("SELECT * FROM titles_two WHERE certificate_id = ?");
+$stmt->bind_param("i", $cert['id']);
+$stmt->execute();
+$title_two_result = $stmt->get_result();
+$total_title_two = $title_two_result->num_rows;
+// END
+
+
+// Fetch multiple title three if exists
+$stmt = $conn->prepare("SELECT * FROM titles_three WHERE certificate_id = ?");
+$stmt->bind_param("i", $cert['id']);
+$stmt->execute();
+$title_three_result = $stmt->get_result();
+$total_title_three = $title_three_result->num_rows;
+// END
+
+
 $stmt->close(); 
 ?>
 <!DOCTYPE html>
@@ -46,6 +77,7 @@ $stmt->close();
   <style>
     body {
       background: #f9f9f9;
+      font-family: 'Poppins', sans-serif;
     }
     .certificate-area {
       margin: 20px auto;
@@ -55,7 +87,7 @@ $stmt->close();
       max-width: 1100px; /* Keep fixed width for PDF */
     }
     .bg-color {
-      background-color: #0078D7;
+      background-color: #5794da;
     }
     table {
       width: 100%;
@@ -70,7 +102,7 @@ $stmt->close();
     td { text-align: left; }
     .label {
       background-color: #d9e8f7;
-      font-weight: bold;
+      /* font-weight: bold; */
       width: 40%;
     }
     .download-btn {
@@ -101,31 +133,111 @@ $stmt->close();
     <!-- First table -->
     <div class="mt-3">
       <table>
+        <?php
+          if ($type != '') {
+              echo '
+              <tr>
+                <th class="label">CERTIFICATE TYPE:</th>
+                <th>'.$type.'</th>
+              </tr>
+              ';
+          }
+        ?>
         <tr>
-          <th>CERTIFICATE TYPE:</th>
-          <th><?= htmlspecialchars($training) ?></th>
-        </tr>
-        <tr>
-          <td colspan="2"><?= htmlspecialchars($condition) ?></td>
+          <td class="label" colspan="2"><?= htmlspecialchars($condition) ?></td>
         </tr>
       </table>
     </div>
 
-    <!-- Second table -->
-    <div class="mt-3">
-      <table>
-        <tr class="bg-color text-white">
-          <th>Title of Training</th>
-          <th>STCW Regulation</th>
-          <th>Section of STCW Code</th>
-        </tr>
-        <tr>
-          <td><?= htmlspecialchars($training) ?></td>
-          <td><?= htmlspecialchars($regulations) ?></td>
-          <td><?= htmlspecialchars($sections) ?></td>
-        </tr>
-      </table>
-    </div>
+    <!-- Title One table -->
+    <?php
+      if ($total_title_one > 0) {
+        ?>
+          <div class="my-3">
+            <table>
+              <tr class="bg-color text-white">
+                <th>Title of Training</th>
+                <th>STCW Regulation</th>
+                <th>Section of STCW Code</th>
+              </tr>
+              <?php
+                while ($row = $title_one_result->fetch_assoc()) {
+                    $training = $row['title_of_training'];
+                    $regulations = $row['stcw_regulation'];
+                    $sections = $row['section_stcw_code'];
+
+                    echo "<tr>
+                            <td>" . htmlspecialchars($training) . "</td>
+                            <td>" . htmlspecialchars($regulations) . "</td>
+                            <td>" . htmlspecialchars($sections) . "</td>
+                          </tr>";
+                }
+              ?>
+            </table>
+          </div>
+        <?php
+      }
+    ?>
+
+    <!-- Title Two table -->
+    <?php
+      if ($total_title_two > 0) {
+        ?>
+          <div class="my-3">
+            <table>
+              <tr class="bg-color text-white">
+                <th>Function</th>
+                <th>Level</th>
+                <th>Limitations applying (if any)</th>
+              </tr>
+              <?php
+                while ($row = $title_two_result->fetch_assoc()) {
+                    $functions = $row['functions'];
+                    $levels = $row['levels'];
+                    $limitations = $row['limitations'];
+
+                    echo "<tr>
+                            <td>" . htmlspecialchars($functions) . "</td>
+                            <td>" . htmlspecialchars($levels) . "</td>
+                            <td>" . htmlspecialchars($limitations) . "</td>
+                          </tr>";
+                }
+              ?>
+            </table>
+          </div>
+        <?php
+      }
+    ?>
+
+    <!-- Title Three table -->
+    <?php
+      if ($total_title_three > 0) {
+        ?>
+          <div class="my-3">
+            <table>
+              <tr class="bg-color text-white">
+                <th>Capacity</th>
+                <th>STCW Regulation</th>
+                <th>Limitations applying (if any)</th>
+              </tr>
+              <?php
+                while ($row = $title_three_result->fetch_assoc()) {
+                    $capacity = $row['capacity'];
+                    $stcw_regulation = $row['stcw_regulation'];
+                    $limitations = $row['limitations'];
+
+                    echo "<tr>
+                            <td>" . htmlspecialchars($capacity) . "</td>
+                            <td>" . htmlspecialchars($stcw_regulation) . "</td>
+                            <td>" . htmlspecialchars($limitations) . "</td>
+                          </tr>";
+                }
+              ?>
+            </table>
+          </div>
+        <?php
+      }
+    ?>
 
     <!-- Profile and sign -->
     <div style="border: 1px solid #ccc; padding: 12px">

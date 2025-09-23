@@ -16,9 +16,11 @@ CREATE TABLE certificates (
     certificate_id VARCHAR(100) NOT NULL,
     certificate_type VARCHAR(100) NOT NULL,
     policy_text TEXT,
-    title_of_training VARCHAR(255),
-    stcw_regulation VARCHAR(255),
-    section_stcw_code VARCHAR(255),
+
+    title_one_id INT NOT NULL,
+    title_two_id INT NOT NULL,
+    title_three_id INT NOT NULL,
+
     profile_photo VARCHAR(255),
     signature_photo VARCHAR(255),
     full_name VARCHAR(255) NOT NULL,
@@ -33,6 +35,36 @@ CREATE TABLE certificates (
     title VARCHAR(255),                            
     name VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE titles_one (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    certificate_id INT NOT NULL,
+    title_of_training VARCHAR(255),
+    stcw_regulation VARCHAR(255),
+    section_stcw_code VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (certificate_id) REFERENCES certificates(id) ON DELETE CASCADE
+);
+
+CREATE TABLE titles_two (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    certificate_id INT NOT NULL,
+    functions VARCHAR(255),
+    levels VARCHAR(255),
+    limitations VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (certificate_id) REFERENCES certificates(id) ON DELETE CASCADE
+);
+
+CREATE TABLE titles_three (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    certificate_id INT NOT NULL,
+    capacity VARCHAR(255),
+    stcw_regulation VARCHAR(255),
+    limitations VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (certificate_id) REFERENCES certificates(id) ON DELETE CASCADE
 );
 
 CREATE TABLE users (
