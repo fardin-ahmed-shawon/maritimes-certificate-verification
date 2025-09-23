@@ -82,8 +82,7 @@ $stmt->close();
     .certificate-area {
       margin: 20px auto;
       padding: 20px;
-
-      max-width: 1100px; /* Keep fixed width for PDF */
+      max-width: 1300px; /* Keep fixed width for PDF */
     }
     .bg-color {
       background-color: #5794da;
@@ -119,7 +118,7 @@ $stmt->close();
 
   <div id="certificateContent" class="certificate-area">
     <!-- Header -->
-    <div class="certificate-container pt-5 pb-2 d-flex justify-content-between align-items-center">
+    <div class="certificate-container pb-2 d-flex justify-content-between align-items-center">
       <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png">
       <h1 class="mt-2 text-center flex-grow-1">COOK ISLANDS SHIPS REGISTRY</h1>
       <div id="qrcode" style="height:100px;"></div>
@@ -214,7 +213,7 @@ $stmt->close();
       if ($total_title_three > 0) {
         ?>
         <div class="my-3">
-          <div style="background-color: #d9e8f7; padding: 8px; border: 1px solid #000000ff;">
+          <div style="background-color: #d9e8f7; padding: 5px; border: 1px solid #000000ff;">
             The lawful holder of this certificate may serve in the following capacity or capacities specified in the applicable safe manning requirements of the Administration:
           </div>
         </div>
@@ -350,34 +349,34 @@ $stmt->close();
     const element = document.getElementById("certificateContent");
 
     html2canvas(element, { scale: 2 }).then(canvas => {
-    const imgData = canvas.toDataURL("image/png");
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p", "mm", "a4");
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF("p", "mm", "a4");
 
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
 
-    const imgWidth = pdfWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const imgWidth = pdfWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    if (imgHeight <= pdfHeight) {
-        // fits in one page
-        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-    } else {
-        // split into pages
-        let heightLeft = imgHeight;
-        let position = 0;
+        if (imgHeight <= pdfHeight) {
+            // fits in one page
+            pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+        } else {
+            // split into pages
+            let heightLeft = imgHeight;
+            let position = 0;
 
-        while (heightLeft > 0) {
-            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-            heightLeft -= pdfHeight;
-            position -= pdfHeight;
-            if (heightLeft > 0) pdf.addPage();
+            while (heightLeft > 0) {
+                pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+                position -= pdfHeight;
+                if (heightLeft > 0) pdf.addPage();
+            }
         }
-    }
 
-    pdf.save("Certificate.pdf");
-});
+        pdf.save("Certificate.pdf");
+    });
 
   });
 </script>
