@@ -82,8 +82,7 @@ $stmt->close();
     .certificate-area {
       margin: 20px auto;
       padding: 20px;
-      border: 1px solid #ccc;
-      background: #fff;
+
       max-width: 1100px; /* Keep fixed width for PDF */
     }
     .bg-color {
@@ -110,6 +109,7 @@ $stmt->close();
       display: flex;
       justify-content: center;
     }
+    
   </style>
 </head>
 <body>
@@ -350,21 +350,35 @@ $stmt->close();
     const element = document.getElementById("certificateContent");
 
     html2canvas(element, { scale: 2 }).then(canvas => {
-      const imgData = canvas.toDataURL("image/png");
+    const imgData = canvas.toDataURL("image/png");
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF("p", "mm", "a4");
 
-      // A4 size in mm
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
 
-      // Convert canvas to fit A4 dimensions
-      const imgWidth = pageWidth;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const imgWidth = pdfWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+    if (imgHeight <= pdfHeight) {
+        // fits in one page
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+    } else {
+        // split into pages
+        let heightLeft = imgHeight;
+        let position = 0;
 
-      pdf.save("Certificate.pdf");
-    });
+        while (heightLeft > 0) {
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pdfHeight;
+            position -= pdfHeight;
+            if (heightLeft > 0) pdf.addPage();
+        }
+    }
+
+    pdf.save("Certificate.pdf");
+});
+
   });
 </script>
 

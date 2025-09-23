@@ -145,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <table class="table table-bordered">
             <tr>
                 <th>CERTIFICATE TYPE:</th>
-                <td><input type="text" name="certificate_type" class="form-control" value="<?= htmlspecialchars($cert['certificate_type']) ?>" required></td>
+                <td><input type="text" name="certificate_type" class="form-control" value="<?= htmlspecialchars($cert['certificate_type']) ?>"></td>
             </tr>
             <tr>
                 <td colspan="2">
