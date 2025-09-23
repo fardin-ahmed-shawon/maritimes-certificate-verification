@@ -120,13 +120,13 @@ $stmt->close();
     <!-- Header -->
     <div class="certificate-container pb-2 d-flex justify-content-between align-items-center">
       <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png">
-      <h1 class="mt-2 text-center flex-grow-1">COOK ISLANDS SHIPS REGISTRY</h1>
+      <h1 class="mt-2 text-center flex-grow-1"><b>COOK ISLANDS SHIPS REGISTRY</b></h1>
       <div id="qrcode" style="height:100px;"></div>
     </div>
 
     <!-- Title -->
     <div class="mt-3 bg-color text-white ps-2 py-1 text-center">
-      <h3 class="mb-0">COOK ISLANDS CERTIFICATE OF PROFICIENCY</h3>
+      <h3 class="mb-0"><b>COOK ISLANDS CERTIFICATE OF PROFICIENCY</b></h3>
     </div>
 
     <!-- First table -->
@@ -323,7 +323,7 @@ $stmt->close();
       </table>
     </div>
     <br>
-    <p class="mb-0">COOK ISLANDS CERTIFICATE OF COMPETENCY <?= htmlspecialchars($certificate_number) ?>-<?= htmlspecialchars($full_name) ?></p>
+    <p class="mb-0" style="color: #6e6e6eff;">COOK ISLANDS CERTIFICATE OF COMPETENCY <?= htmlspecialchars($certificate_number) ?>-<?= htmlspecialchars($full_name) ?></p>
   </div>
 
   <!-- QR Code -->
