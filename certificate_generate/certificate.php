@@ -318,13 +318,13 @@ $stmt->close();
         </tr>
         <tr>
           <td colspan="2">
-            <img src="../admin/<?= htmlspecialchars($seal_img) ?>" alt="Registry Seal" style="height:160px;">
+            <img src="../admin/<?= htmlspecialchars($seal_img) ?>" alt="Registry Seal" style="height:170px;">
           </td>
         </tr>
         <tr>
           <td colspan="2">
             <h6 class="fw-bold border-bottom pb-1">SIGNATURE</h6>
-            <img src="../admin/<?= htmlspecialchars($seal_sign) ?>" alt="Authorized Signature" style="height:90px;">
+            <img src="../admin/<?= htmlspecialchars($seal_sign) ?>" alt="Authorized Signature" style="height:110px;">
           </td>
         </tr>
         <tr>
