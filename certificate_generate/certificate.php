@@ -112,9 +112,9 @@ $stmt->close();
   </style>
 </head>
 <body>
-  <div class="download-btn">
+  <!-- <div class="download-btn">
     <button id="downloadPDF" class="btn btn-info">Download PDF</button>
-  </div>
+  </div> -->
 
   <div id="certificateContent" class="certificate-area">
     <!-- Header -->
@@ -341,16 +341,15 @@ $stmt->close();
   </script>
 
   <!-- PDF Export -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-  document.getElementById("downloadPDF").addEventListener("click", () => {
+  window.addEventListener("load", () => {
     const { jsPDF } = window.jspdf;
     const element = document.getElementById("certificateContent");
 
     html2canvas(element, { scale: 2 }).then(canvas => {
         const imgData = canvas.toDataURL("image/png");
-        const { jsPDF } = window.jspdf;
         const pdf = new jsPDF("p", "mm", "a4");
 
         const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -360,10 +359,8 @@ $stmt->close();
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         if (imgHeight <= pdfHeight) {
-            // fits in one page
             pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
         } else {
-            // split into pages
             let heightLeft = imgHeight;
             let position = 0;
 
@@ -377,7 +374,6 @@ $stmt->close();
 
         pdf.save("Certificate.pdf");
     });
-
   });
 </script>
 
