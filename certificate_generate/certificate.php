@@ -340,18 +340,18 @@ $stmt->close();
     });
   </script>
 
-  <!-- PDF Export -->
+  <!-- PDF Export with compressed images -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    window.addEventListener("load", () => {
+  window.addEventListener("load", () => {
       const { jsPDF } = window.jspdf;
       const element = document.getElementById("certificateContent");
 
-      html2canvas(element, { scale: 2 }).then(canvas => {
-          const imgData = canvas.toDataURL("image/png");
-          const pdf = new jsPDF("p", "mm", "a4");
+      html2canvas(element, { scale: 3.5 }).then(canvas => { // reduce scale for smaller file
+          const imgData = canvas.toDataURL("image/jpeg", 1); // JPEG with 90% quality
 
+          const pdf = new jsPDF("p", "mm", "a4");
           const pdfWidth = pdf.internal.pageSize.getWidth();
           const pdfHeight = pdf.internal.pageSize.getHeight();
 
@@ -359,13 +359,13 @@ $stmt->close();
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
           if (imgHeight <= pdfHeight) {
-              pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+              pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
           } else {
               let heightLeft = imgHeight;
               let position = 0;
 
               while (heightLeft > 0) {
-                  pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+                  pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
                   heightLeft -= pdfHeight;
                   position -= pdfHeight;
                   if (heightLeft > 0) pdf.addPage();
@@ -374,8 +374,9 @@ $stmt->close();
 
           pdf.save("Certificate.pdf");
       });
-    });
+  });
   </script>
+
 
 </body>
 </html>
