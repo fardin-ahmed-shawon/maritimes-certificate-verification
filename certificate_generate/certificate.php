@@ -75,14 +75,17 @@ $stmt->close();
   <title>Certificate - <?= htmlspecialchars($full_name) ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
     body {
-      background: #f9f9f9;
+      background: #ffffffff;
       font-family: 'Poppins', sans-serif;
     }
     .certificate-area {
       margin: 20px auto;
       padding: 20px;
-      max-width: 1300px; /* Keep fixed width for PDF */
+      max-width: 1400px; /* Keep fixed width for PDF */
     }
     .bg-color {
       background-color: #5794da;
@@ -93,11 +96,23 @@ $stmt->close();
       /* margin-bottom: 20px; */
     }
     th, td {
-      border: 1px solid #000;
-      padding: 10px;
+      border: 1px solid #aaaaaa;
+      padding: 5px 10px;
     }
-    th { text-align: center; }
-    td { text-align: left; }
+
+
+    .f-t table tr:nth-child(odd),
+    .s-t table tr:nth-child(odd),
+    .t-t table tr:nth-child(odd) {
+      background-color: #d9e8f7 !important;
+    }
+
+    table th {
+      background-color: #5794da;
+
+    }
+    
+
     .label {
       background-color: #d9e8f7;
       /* font-weight: bold; */
@@ -119,14 +134,14 @@ $stmt->close();
   <div id="certificateContent" class="certificate-area">
     <!-- Header -->
     <div class="certificate-container pb-2 d-flex justify-content-between align-items-center">
-      <img style="width: 100px" src="./image/certificatelogo.png" alt="certificatelogo.png">
-      <h1 class="mt-2 text-center flex-grow-1"><b>COOK ISLANDS SHIPS REGISTRY</b></h1>
-      <div id="qrcode" style="height:100px;"></div>
-    </div>
+      <img style="width: 140px" src="./image/certificatelogo.png" alt="certificatelogo.png">
+      <h1 class="mt-2 text-center flex-grow-1" style="font-size: 50px;"><b>COOK ISLANDS SHIPS REGISTRY</b></h1>
+      <div id="qrcode" style="width: 140px; height:140px;"></div>
+    </div><br>
 
     <!-- Title -->
-    <div class="mt-3 bg-color text-white ps-2 py-1 text-center">
-      <h3 class="mb-0"><b>COOK ISLANDS CERTIFICATE OF PROFICIENCY</b></h3>
+    <div class="mt-3 bg-color text-white ps-2 py-1">
+      <h3 class="mb-0 p-2"><b>COOK ISLANDS CERTIFICATE OF PROFICIENCY</b></h3>
     </div>
 
     <!-- First table -->
@@ -152,7 +167,7 @@ $stmt->close();
     <?php
       if ($total_title_one > 0) {
         ?>
-          <div class="my-3">
+          <div class="my-3 f-t">
             <table>
               <tr class="bg-color text-white">
                 <th>Title of Training</th>
@@ -182,7 +197,7 @@ $stmt->close();
     <?php
       if ($total_title_two > 0) {
         ?>
-          <div class="my-3">
+          <div class="my-3 s-t">
             <table>
               <tr class="bg-color text-white">
                 <th>Function</th>
@@ -212,8 +227,8 @@ $stmt->close();
     <?php
       if ($total_title_three > 0) {
         ?>
-        <div class="my-3">
-          <div style="background-color: #d9e8f7; padding: 5px; border: 1px solid #000000ff;">
+        <div class="my-3 t-t">
+          <div style="background-color: #d9e8f7; padding: 5px; border: 1px solid #aaaaaa;">
             The lawful holder of this certificate may serve in the following capacity or capacities specified in the applicable safe manning requirements of the Administration:
           </div>
         </div>
@@ -247,8 +262,8 @@ $stmt->close();
     <div style="border: 1px solid #ccc; padding: 12px">
       <p>Photograph & Signature of the Holder</p>
       <div class="mt-3 d-flex gap-3">
-        <img src="../admin/<?= htmlspecialchars($img) ?>" alt="Profile Photo" style="height:120px;">
-        <img src="../admin/<?= htmlspecialchars($sign) ?>" alt="Signature Photo" style="height:60px;">
+        <img src="../admin/<?= htmlspecialchars($img) ?>" alt="Profile Photo" style="width: 200px;">
+        <img src="../admin/<?= htmlspecialchars($sign) ?>" alt="Signature Photo" style="height: 60px;">
       </div>
     </div>
 
@@ -303,13 +318,13 @@ $stmt->close();
         </tr>
         <tr>
           <td colspan="2">
-            <img src="../admin/<?= htmlspecialchars($seal_img) ?>" alt="Registry Seal" style="height:120px;">
+            <img src="../admin/<?= htmlspecialchars($seal_img) ?>" alt="Registry Seal" style="height:160px;">
           </td>
         </tr>
         <tr>
           <td colspan="2">
             <h6 class="fw-bold border-bottom pb-1">SIGNATURE</h6>
-            <img src="../admin/<?= htmlspecialchars($seal_sign) ?>" alt="Authorized Signature" style="height:60px;">
+            <img src="../admin/<?= htmlspecialchars($seal_sign) ?>" alt="Authorized Signature" style="height:90px;">
           </td>
         </tr>
         <tr>
@@ -332,8 +347,8 @@ $stmt->close();
     const certificateURL = "<?= $certificate_url ?>";
     new QRCode(document.getElementById("qrcode"), {
       text: certificateURL,
-      width: 100,
-      height: 100,
+      width: 140,
+      height: 140,
       colorDark: "#000000",
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H
@@ -344,37 +359,39 @@ $stmt->close();
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-  window.addEventListener("load", () => {
-      const { jsPDF } = window.jspdf;
-      const element = document.getElementById("certificateContent");
+    window.addEventListener("load", () => {
+        const { jsPDF } = window.jspdf;
+        const element = document.getElementById("certificateContent");
 
-      html2canvas(element, { scale: 3.5 }).then(canvas => { // reduce scale for smaller file
-          const imgData = canvas.toDataURL("image/jpeg", 1); // JPEG with 90% quality
+        html2canvas(element, { scale: 3.5 }).then(canvas => {
+            const imgData = canvas.toDataURL("image/jpeg", 1);
 
-          const pdf = new jsPDF("p", "mm", "a4");
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const pdfHeight = pdf.internal.pageSize.getHeight();
+            const pdf = new jsPDF("p", "mm", "a4");
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
 
-          const imgWidth = pdfWidth;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            const padding = 6; // 10mm padding on all sides
 
-          if (imgHeight <= pdfHeight) {
-              pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
-          } else {
-              let heightLeft = imgHeight;
-              let position = 0;
+            const imgWidth = pdfWidth - 2 * padding;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-              while (heightLeft > 0) {
-                  pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-                  heightLeft -= pdfHeight;
-                  position -= pdfHeight;
-                  if (heightLeft > 0) pdf.addPage();
-              }
-          }
+            if (imgHeight <= pdfHeight - 2 * padding) {
+                pdf.addImage(imgData, "JPEG", padding, padding, imgWidth, imgHeight);
+            } else {
+                let heightLeft = imgHeight;
+                let position = padding;
 
-          pdf.save("Certificate.pdf");
-      });
-  });
+                while (heightLeft > 0) {
+                    pdf.addImage(imgData, "JPEG", padding, position, imgWidth, imgHeight);
+                    heightLeft -= (pdfHeight - 2 * padding);
+                    position -= (pdfHeight - 2 * padding);
+                    if (heightLeft > 0) pdf.addPage();
+                }
+            }
+
+            pdf.save("Certificate.pdf");
+        });
+    });
   </script>
 
 
