@@ -152,7 +152,7 @@ $stmt->close();
               echo '
               <tr>
                 <th class="label">CERTIFICATE TYPE:</th>
-                <th>'.$type.'</th>
+                <th class="bg-white">'.$type.'</th>
               </tr>
               ';
           }
