@@ -342,40 +342,41 @@ $stmt->close();
 
   <!-- PDF Export -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script>
-  window.addEventListener("load", () => {
-    const { jsPDF } = window.jspdf;
-    const element = document.getElementById("certificateContent");
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    window.addEventListener("load", () => {
+  const { jsPDF } = window.jspdf;
+  const element = document.getElementById("certificateContent");
 
-    html2canvas(element, { scale: 2 }).then(canvas => {
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
+  html2canvas(element, { scale: 1 }).then(canvas => {
+      const imgData = canvas.toDataURL("image/jpeg", 0.6); // compressed JPEG
+      const pdf = new jsPDF("p", "mm", "a4");
 
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = pdf.internal.pageSize.getHeight();
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
 
-        const imgWidth = pdfWidth;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        if (imgHeight <= pdfHeight) {
-            pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
-        } else {
-            let heightLeft = imgHeight;
-            let position = 0;
+      if (imgHeight <= pdfHeight) {
+          pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
+      } else {
+          let heightLeft = imgHeight;
+          let position = 0;
 
-            while (heightLeft > 0) {
-                pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-                heightLeft -= pdfHeight;
-                position -= pdfHeight;
-                if (heightLeft > 0) pdf.addPage();
-            }
-        }
+          while (heightLeft > 0) {
+              pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+              heightLeft -= pdfHeight;
+              position -= pdfHeight;
+              if (heightLeft > 0) pdf.addPage();
+          }
+      }
 
-        pdf.save("Certificate.pdf");
-    });
+      pdf.save("Certificate.pdf");
   });
-</script>
+});
+
+  </script>
 
 </body>
 </html>
