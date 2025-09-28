@@ -127,9 +127,10 @@ $stmt->close();
   </style>
 </head>
 <body>
-  <!-- <div class="download-btn">
+  <div class="download-btn">
     <button id="downloadPDF" class="btn btn-info">Download PDF</button>
-  </div> -->
+  </div>
+
 
   <div id="certificateContent" class="certificate-area">
     <!-- Header -->
@@ -341,58 +342,127 @@ $stmt->close();
     <p class="mb-0" style="color: #6e6e6eff;">COOK ISLANDS CERTIFICATE OF COMPETENCY <?= htmlspecialchars($certificate_number) ?>-<?= htmlspecialchars($full_name) ?></p>
   </div>
 
-  <!-- QR Code -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script>
-    const certificateURL = "<?= $certificate_url ?>";
-    new QRCode(document.getElementById("qrcode"), {
-      text: certificateURL,
-      width: 140,
-      height: 140,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H
+  <!-- QR Code (same as before) -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script>
+  const certificateURL = "<?= $certificate_url ?>";
+  // generate visible QR (keeps original behavior)
+  new QRCode(document.getElementById("qrcode"), {
+    text: certificateURL,
+    width: 140,
+    height: 140,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.H
+  });
+</script>
+
+<!-- html2canvas & jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  // Utility: wait until an image (img element) has finished loading
+  function waitForImageLoad(img) {
+    return new Promise(resolve => {
+      if (!img) return resolve();
+      if (img.complete && (img.naturalWidth !== 0 || img.src.indexOf('data:') === 0)) return resolve();
+      img.onload = img.onerror = () => resolve();
     });
-  </script>
+  }
 
-  <!-- PDF Export with compressed images -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script>
-    window.addEventListener("load", () => {
-        const { jsPDF } = window.jspdf;
-        const element = document.getElementById("certificateContent");
+  // Main PDF generator — produces consistent A4 single-page PDF regardless of viewport
+  async function generateA4PdfFromElement(options = {}) {
+  const {
+    elementId = 'certificateContent',
+    filename = 'Certificate.pdf',
+    canvasScale = 2.0
+  } = options;
 
-        html2canvas(element, { scale: 3.5 }).then(canvas => {
-            const imgData = canvas.toDataURL("image/jpeg", 1);
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pdfWidthMM = pdf.internal.pageSize.getWidth();   // 210
+  const pdfHeightMM = pdf.internal.pageSize.getHeight(); // 297
 
-            const pdf = new jsPDF("p", "mm", "a4");
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = pdf.internal.pageSize.getHeight();
+  const original = document.getElementById(elementId);
+  if (!original) throw new Error('Element not found: ' + elementId);
 
-            const padding = 6; // 10mm padding on all sides
+  // Clone element
+  const clone = original.cloneNode(true);
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'fixed';
+  wrapper.style.left = '-9999px';
+  wrapper.style.top = '0';
+  wrapper.style.background = '#fff';
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
 
-            const imgWidth = pdfWidth - 2 * padding;
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  // Wait for fonts & images
+  const waitForImageLoad = img => new Promise(res => {
+    if (!img) return res();
+    if (img.complete && (img.naturalWidth !== 0 || img.src.indexOf('data:') === 0)) return res();
+    img.onload = img.onerror = () => res();
+  });
+  const images = wrapper.querySelectorAll('img');
+  const imagePromises = Array.from(images).map(waitForImageLoad);
+  const fontPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  await Promise.all([fontPromise, ...imagePromises]);
 
-            if (imgHeight <= pdfHeight - 2 * padding) {
-                pdf.addImage(imgData, "JPEG", padding, padding, imgWidth, imgHeight);
-            } else {
-                let heightLeft = imgHeight;
-                let position = padding;
+  // Render with html2canvas
+  const canvas = await html2canvas(wrapper, {
+    scale: canvasScale,
+    useCORS: true,
+    allowTaint: false,
+    windowWidth: wrapper.scrollWidth,
+    windowHeight: wrapper.scrollHeight
+  });
+  const imgData = canvas.toDataURL('image/jpeg', 0.98);
 
-                while (heightLeft > 0) {
-                    pdf.addImage(imgData, "JPEG", padding, position, imgWidth, imgHeight);
-                    heightLeft -= (pdfHeight - 2 * padding);
-                    position -= (pdfHeight - 2 * padding);
-                    if (heightLeft > 0) pdf.addPage();
-                }
-            }
+  // Calculate scaling (keep aspect ratio)
+  const imgWidthMM = pdfWidthMM;
+  const imgHeightMM = (canvas.height * imgWidthMM) / canvas.width;
 
-            pdf.save("Certificate.pdf");
-        });
-    });
-  </script>
+  let finalWidthMM, finalHeightMM;
+  if (imgHeightMM > pdfHeightMM) {
+    // Fit by height
+    finalHeightMM = pdfHeightMM;
+    finalWidthMM = (canvas.width * finalHeightMM) / canvas.height;
+  } else {
+    // Fit by width
+    finalWidthMM = imgWidthMM;
+    finalHeightMM = imgHeightMM;
+  }
+
+  // Center horizontally & vertically
+  const x = (pdfWidthMM - finalWidthMM) / 2;
+  const y = (pdfHeightMM - finalHeightMM) / 2;
+
+  pdf.addImage(imgData, 'JPEG', x, y, finalWidthMM, finalHeightMM);
+  pdf.save(filename);
+
+  document.body.removeChild(wrapper);
+}
+
+
+
+
+  // Hook button
+  document.getElementById('downloadPDF').addEventListener('click', async () => {
+  await generateA4PdfFromElement({
+    elementId: 'certificateContent',
+    filename: 'Certificate.pdf',
+    canvasScale: 2.5
+  });
+});
+
+
+
+
+
+  // OPTIONAL: if you really want auto-download on page load (not recommended), uncomment:
+  // window.addEventListener('load', () => document.getElementById('downloadPDF').click());
+</script>
+
 
 
 </body>
