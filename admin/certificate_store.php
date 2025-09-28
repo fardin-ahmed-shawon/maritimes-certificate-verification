@@ -35,8 +35,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $registry_seal_img = $_FILES['registry_seal_img']['name'] ? uploadFile($_FILES['registry_seal_img']) : null;
     $authority_signature_img = $_FILES['authority_signature_img']['name'] ? uploadFile($_FILES['authority_signature_img']) : null;
 
-    // Generate certificate ID
-    $certificate_id = 'CERT-' . time();
+    // Generate certificate ID //////
+
+    // Generate numeric part (6 digits)
+    $numericPart = random_int(100000, 999999);
+
+    // Generate secure random hex (16 bytes = 32 hex characters, then uppercase)
+    $hexPart = strtoupper(bin2hex(random_bytes(16)));
+
+    // Combine with dash
+    $certificate_id = $numericPart . '-' . $hexPart;
+    // END /////////
 
     // Insert into certificates
     $stmt = $conn->prepare("INSERT INTO certificates 

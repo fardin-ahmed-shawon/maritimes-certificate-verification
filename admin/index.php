@@ -63,7 +63,7 @@ require 'header.php';
                         <th>Email</th>
                         <th>Document Serial</th>
                         <th>Created At</th>
-                        <th>Action</th>
+                        <th colspan="2">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,6 +77,8 @@ require 'header.php';
                         <td><?= $app['created_at'] ?></td>
                         <td>
                             <a href="view_application.php?id=<?= $app['id'] ?>" class="btn btn-sm btn-dark text-white"><b>Details</b></a>
+                        </td>
+                        <td>
                             <a href="edit_application.php?id=<?= $app['id'] ?>" class="btn btn-sm btn-warning"><b>Edit</b></a>
                         </td>
                     </tr>
@@ -105,7 +107,7 @@ require 'header.php';
                         <th>Date of Issue</th>
                         <th>Date of Expiry</th>
                         <th>Created At</th>
-                        <th>Action</th>
+                        <th colspan="2">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -120,7 +122,9 @@ require 'header.php';
                         <td><?= $cert['date_of_expiry'] ?></td>
                         <td><?= $cert['created_at'] ?></td>
                         <td>
-                            <a href="../certificate_generate/certificate.php?id=<?= $cert['certificate_id'] ?>" target="_blank" class="btn btn-sm btn-dark text-white"><b>Preview</b></a>
+                            <a href="../certificate_generate/verif.php?id=<?= $cert['certificate_id'] ?>" target="_blank" class="btn btn-sm btn-dark text-white"><b>Preview</b></a>
+                        </td>
+                        <td>
                             <a href="edit_certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-warning"><b>Edit</b></a>
                         </td>
                     </tr>

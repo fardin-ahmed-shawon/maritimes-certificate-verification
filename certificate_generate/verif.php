@@ -36,7 +36,7 @@ $seal_sign = $cert['authority_signature_img'];
 $auth_title = $cert['title'];
 $auth_name = $cert['name'];
 
-$certificate_url = $site_url.'certificate_generate/certificate.php?id='. $certificate_id;
+$certificate_url = $site_url.'certificate_generate/verif.php?id='. $certificate_id;
 
 // Fetch multiple title one if exists
 $stmt = $conn->prepare("SELECT * FROM titles_one WHERE certificate_id = ?");
@@ -80,7 +80,8 @@ $stmt->close();
 
     body {
       background: #ffffffff;
-      font-family: 'Poppins', sans-serif;
+      /* font-family: 'Poppins', sans-serif; */
+      font-family: Arial, Helvetica, sans-serif;
     }
     .certificate-area {
       margin: 20px auto;

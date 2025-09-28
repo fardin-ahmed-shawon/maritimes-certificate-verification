@@ -68,7 +68,7 @@ if ($result && $result->num_rows > 0) {
                 <td><?= $cert['date_of_expiry'] ?></td>
                 <td><?= $cert['created_at'] ?></td>
                 <td>
-                    <a href="../certificate_generate/certificate.php?id=<?= $cert['certificate_id'] ?>" target="_blank" class="btn btn-sm btn-dark text-white"><b>Preview</b></a>
+                    <a href="../certificate_generate/verif.php?id=<?= $cert['certificate_id'] ?>" target="_blank" class="btn btn-sm btn-dark text-white"><b>Preview</b></a>
                     <a href="edit_certificate.php?id=<?= $cert['id'] ?>" class="btn btn-sm btn-warning"><b>Edit</b></a>
                 </td>
             </tr>
