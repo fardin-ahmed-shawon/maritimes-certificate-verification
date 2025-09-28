@@ -373,75 +373,76 @@ $stmt->close();
 
   // Main PDF generator — produces consistent A4 single-page PDF regardless of viewport
   async function generateA4PdfFromElement(options = {}) {
-    const {
-      elementId = 'certificateContent',
-      filename = 'Certificate.pdf',
-      canvasScale = 2.0
-    } = options;
+  const {
+    elementId = 'certificateContent',
+    filename = 'Certificate.pdf',
+    canvasScale = 2.0
+  } = options;
 
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidthMM = pdf.internal.pageSize.getWidth();   // 210
-    const pdfHeightMM = pdf.internal.pageSize.getHeight(); // 297
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF('p', 'mm', 'a4');
+  const pdfWidthMM = pdf.internal.pageSize.getWidth();   // 210
+  const pdfHeightMM = pdf.internal.pageSize.getHeight(); // 297
 
-    const original = document.getElementById(elementId);
-    if (!original) throw new Error('Element not found: ' + elementId);
+  const original = document.getElementById(elementId);
+  if (!original) throw new Error('Element not found: ' + elementId);
 
-    // Clone element
-    const clone = original.cloneNode(true);
-    const wrapper = document.createElement('div');
-    wrapper.style.position = 'fixed';
-    wrapper.style.left = '-9999px';
-    wrapper.style.top = '0';
-    wrapper.style.background = '#fff';
-    wrapper.appendChild(clone);
-    document.body.appendChild(wrapper);
+  // Clone element
+  const clone = original.cloneNode(true);
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'fixed';
+  wrapper.style.left = '-9999px';
+  wrapper.style.top = '0';
+  wrapper.style.background = '#fff';
+  wrapper.appendChild(clone);
+  document.body.appendChild(wrapper);
 
-    // Wait for fonts & images
-    const waitForImageLoad = img => new Promise(res => {
-      if (!img) return res();
-      if (img.complete && (img.naturalWidth !== 0 || img.src.indexOf('data:') === 0)) return res();
-      img.onload = img.onerror = () => res();
-    });
-    const images = wrapper.querySelectorAll('img');
-    const imagePromises = Array.from(images).map(waitForImageLoad);
-    const fontPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-    await Promise.all([fontPromise, ...imagePromises]);
+  // Wait for fonts & images
+  const waitForImageLoad = img => new Promise(res => {
+    if (!img) return res();
+    if (img.complete && (img.naturalWidth !== 0 || img.src.indexOf('data:') === 0)) return res();
+    img.onload = img.onerror = () => res();
+  });
+  const images = wrapper.querySelectorAll('img');
+  const imagePromises = Array.from(images).map(waitForImageLoad);
+  const fontPromise = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  await Promise.all([fontPromise, ...imagePromises]);
 
-    // Render with html2canvas
-    const canvas = await html2canvas(wrapper, {
-      scale: canvasScale,
-      useCORS: true,
-      allowTaint: false,
-      windowWidth: wrapper.scrollWidth,
-      windowHeight: wrapper.scrollHeight
-    });
-    const imgData = canvas.toDataURL('image/jpeg', 0.98);
+  // Render with html2canvas
+  const canvas = await html2canvas(wrapper, {
+    scale: canvasScale,
+    useCORS: true,
+    allowTaint: false,
+    windowWidth: wrapper.scrollWidth,
+    windowHeight: wrapper.scrollHeight
+  });
+  const imgData = canvas.toDataURL('image/jpeg', 0.98);
 
-    // Calculate scaling (keep aspect ratio)
-    const imgWidthMM = pdfWidthMM;
-    const imgHeightMM = (canvas.height * imgWidthMM) / canvas.width;
+  // Calculate scaling (keep aspect ratio)
+  const imgWidthMM = pdfWidthMM;
+  const imgHeightMM = (canvas.height * imgWidthMM) / canvas.width;
 
-    let finalWidthMM, finalHeightMM;
-    if (imgHeightMM > pdfHeightMM) {
-      // Fit by height
-      finalHeightMM = pdfHeightMM;
-      finalWidthMM = (canvas.width * finalHeightMM) / canvas.height;
-    } else {
-      // Fit by width
-      finalWidthMM = imgWidthMM;
-      finalHeightMM = imgHeightMM;
-    }
-
-    // Center horizontally & vertically
-    const x = (pdfWidthMM - finalWidthMM) / 2;
-    const y = (pdfHeightMM - finalHeightMM) / 2;
-
-    pdf.addImage(imgData, 'JPEG', x, y, finalWidthMM, finalHeightMM);
-    pdf.save(filename);
-
-    document.body.removeChild(wrapper);
+  let finalWidthMM, finalHeightMM;
+  if (imgHeightMM > pdfHeightMM) {
+    // Fit by height
+    finalHeightMM = pdfHeightMM;
+    finalWidthMM = (canvas.width * finalHeightMM) / canvas.height;
+  } else {
+    // Fit by width
+    finalWidthMM = imgWidthMM;
+    finalHeightMM = imgHeightMM;
   }
+
+  // Center horizontally only
+  const x = (pdfWidthMM - finalWidthMM) / 2;
+  const y = 0; // Top aligned
+
+  pdf.addImage(imgData, 'JPEG', x, y, finalWidthMM, finalHeightMM);
+  pdf.save(filename);
+
+  document.body.removeChild(wrapper);
+}
+
 
 
   // Hook button
