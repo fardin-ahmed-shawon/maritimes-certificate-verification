@@ -67,3 +67,20 @@ CREATE TABLE users (
     username VARCHAR(150) NOT NULL,
     password VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE verification_results (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    top_title VARCHAR(255) NOT NULL,
+    policy_text TEXT,
+    certificate_type VARCHAR(150),
+    seafarer_name VARCHAR(150),
+    validation_result VARCHAR(100),
+    certificate_status VARCHAR(100),
+    document_serial_number VARCHAR(255),
+    date_of_birth DATE,
+    date_of_issue DATE,
+    date_of_expiry DATE,
+    stcw_regulations VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

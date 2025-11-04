@@ -20,9 +20,18 @@ require 'header.php';
         $certificates = $result2->fetch_all(MYSQLI_ASSOC);
     }
 
+    // Fetch verification results
+    $records = [];
+    $result3 = $conn->query("SELECT * FROM verification_results ORDER BY created_at DESC");
+    if ($result3 && $result3->num_rows > 0) {
+        $records = $result3->fetch_all(MYSQLI_ASSOC);
+    }
+
+
     // Stats
     $totalApplications = count($applications);
     $totalCertificates = count($certificates);
+    $totalVerifications = count($records);
 ?>
 
 <!-------------------------->
@@ -45,6 +54,15 @@ require 'header.php';
                     <h2 class="text-white"><?= $totalCertificates ?></h2>
                     <br>
                     <p class="text-white"><b>Total Certificates</b></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card card-stats text-center bg-dark">
+                <div class="card-body">
+                    <h2 class="text-white"><?= $totalVerifications ?></h2>
+                    <br>
+                    <p class="text-white"><b>Total Verifications</b></p>
                 </div>
             </div>
         </div>
@@ -137,6 +155,55 @@ require 'header.php';
         <div class="alert alert-warning mt-3">No certificates found.</div>
     <?php endif; ?>
 
+    <!-- Verification List -->
+    <br><br><h3 class="section-title">Verification List</h3>
+    <?php if (!empty($records)): ?>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Certificate Type</th>
+                        <th>Seafarer Name</th>
+                        <th>Document Serial</th>
+                        <th>Validation Result</th>
+                        <th>Status</th>
+                        <th>Issue Date</th>
+                        <th>Expiry Date</th>
+                        <th>Created At</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($records as $row): ?>
+                    <tr>
+                        <td><?= $row['id'] ?></td>
+                        <td><?= htmlspecialchars($row['certificate_type']) ?></td>
+                        <td><?= htmlspecialchars($row['seafarer_name']) ?></td>
+                        <td><?= htmlspecialchars($row['document_serial_number']) ?></td>
+                        <td><?= htmlspecialchars($row['validation_result']) ?></td>
+                        <td><?= htmlspecialchars($row['certificate_status']) ?></td>
+                        <td><?= htmlspecialchars($row['date_of_issue']) ?></td>
+                        <td><?= htmlspecialchars($row['date_of_expiry']) ?></td>
+                        <td><?= htmlspecialchars($row['created_at']) ?></td>
+                        <td>
+                            <a href="" target="_blank" class="btn btn-sm btn-dark text-white"><b>Preview</b></a>
+                        </td>
+                        <td>
+                            <a href="edit_verification_result.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><b>Edit</b></a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <a href="verification_list.php" class="btn btn-dark px-4 py-2">See All</a>
+    <?php else: ?>
+        <div class="alert alert-warning mt-3">No Verification Results found.</div>
+    <?php endif; ?>
+
+
+    <br><br><br>
 <!-------------------------->
 <!----- END MAIN AREA------>
 <!-------------------------->

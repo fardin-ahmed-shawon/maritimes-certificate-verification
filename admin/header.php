@@ -112,9 +112,10 @@ if (!isset($_SESSION['user_id'])) {
 <div class="container">
     <!-- Header -->
     <div class="row dashboard-header">
-        <h1 class="col-md-6 fw-bold"><?= $page_title ?></h1>
-        <div class="col-md-6">
+        <h1 class="col-md-3 fw-bold"><?= $page_title ?></h1>
+        <div class="col-md-9 text-end">
             <a href="create_certificate.php" class="m-2 btn btn-primary btn-custom me-2"><b>+ Create Certificate</b></a>
+            <a href="create_verification_result.php" class="m-2 btn btn-info btn-custom me-2"><b>+ Create Verification Result</b></a>
             <a href="../index.php" class="m-2 btn btn-success btn-custom"><b>+ New Application</b></a>
             <a href="index.php" class="m-2 btn btn-dark btn-custom"><b>Dashboard</b></a>
             <a href="logout.php" class="m-2 btn btn-danger btn-custom"><b>Logout</b></a>
