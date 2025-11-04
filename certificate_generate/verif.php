@@ -101,6 +101,10 @@ $stmt->close();
       padding: 5px 10px;
     }
 
+    td {
+      color: #000;
+    }
+
 
     .f-t table tr:nth-child(odd),
     .s-t table tr:nth-child(odd),
