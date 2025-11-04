@@ -143,7 +143,23 @@ $stmt->close();
 
     <!-- Title -->
     <div class="mt-3 bg-color text-white ps-2 py-1">
-      <h3 class="mb-0 p-2"><b>COOK ISLANDS CERTIFICATE OF PROFICIENCY</b></h3>
+
+
+    <?php
+      // Determine title based on certificate type
+      $sql = "SELECT functions FROM titles_two WHERE certificate_id = ?";
+      $stmt = $conn->prepare($sql);
+      $stmt->bind_param("i", $cert['id']);
+      $stmt->execute();
+      $result = $stmt->get_result();
+
+      if ($result->num_rows > 0) {
+        echo '<h3 class="mb-0 p-2"><b>COOK ISLANDS CERTIFICATE OF COMPETENCY</b></h3>';
+      } else {
+        echo '<h3 class="mb-0 p-2"><b>COOK ISLANDS CERTIFICATE OF PROFICIENCY</b></h3>';
+      }
+    ?>
+
     </div>
 
     <!-- First table -->
@@ -458,7 +474,7 @@ $stmt->close();
 
 
   // OPTIONAL: if you really want auto-download on page load (not recommended), uncomment:
-  window.addEventListener('load', () => document.getElementById('downloadPDF').click());
+  //window.addEventListener('load', () => document.getElementById('downloadPDF').click());
 
 </script>
 

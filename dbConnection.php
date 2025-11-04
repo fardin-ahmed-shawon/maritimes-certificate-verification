@@ -7,7 +7,7 @@ $user = "root";
 $pass = "";     
 $dbname = "cook_islands_certificates";
 
-$site_url = "https://www.s2.upvise.com.co/";
+//$site_url = "https://www.s2.upvise.com.co/";
 // $host = "localhost";
 // $user = "upviseco"; 
 // $pass = "EqlMa585x9";     
