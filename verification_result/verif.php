@@ -1,18 +1,31 @@
 <?php 
 require '../dbConnection.php';  
 
-$verify_id = $_GET['id'] ?? '';  
+$id = $_GET['id'] ?? '';  
 
-// if (!$verify_id) { die("No verification ID provided."); }  
+if (!$id) { die("No ID provided."); }
 
-// $stmt = $conn->prepare("SELECT * FROM certificates WHERE certificate_id = ?");
-// $stmt->bind_param("s", $certificate_id);
-// $stmt->execute();
-// $result = $stmt->get_result();
-// if ($result->num_rows === 0) { die("Certificate not found."); }  
-// $cert = $result->fetch_assoc();
+$stmt = $conn->prepare("SELECT * FROM verification_results WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+if ($result->num_rows === 0) { die("Result not found."); }  
+$data = $result->fetch_assoc();
 
- $certificate_url = $site_url.'certificate_generate/verif.php?id='. $verify_id;
+$certificate_url = $site_url.'verification_result/verif.php?id='. $id;
+
+// Assign Value
+$top_title = $data['top_title'] ?? '';
+$policy_text = $data['policy_text'] ?? '';
+$certificate_type = $data['certificate_type'] ?? '';
+$seafarer_name = $data['seafarer_name'] ?? '';
+$validation_result = $data['validation_result'] ?? '';
+$certificate_status = $data['certificate_status'] ?? '';
+$document_serial_number = $data['document_serial_number'] ?? '';
+$date_of_birth = $data['date_of_birth'] ?? '';
+$date_of_issue = $data['date_of_issue'] ?? '';
+$date_of_expiry = $data['date_of_expiry'] ?? '';
+$stcw_regulations = $data['stcw_regulations'] ?? '';
 
 
 // $stmt->close(); 
@@ -22,7 +35,7 @@ $verify_id = $_GET['id'] ?? '';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Certificate - FUll Name</title>
+  <title>Verification Result - <?= $seafarer_name ?></title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
 
@@ -99,46 +112,46 @@ $verify_id = $_GET['id'] ?? '';
 
     <!-- Title -->
     <div class="mt-3 bg-color text-white ps-2 py-1">
-      <h2 class="mb-0 p-2 mx-4"><b>Verification result - STCW</b></h2>
+      <h2 class="mb-0 p-2 mx-4"><b><?= $top_title ?></b></h2>
     </div>
 
     <!-- First table -->
     <div class="mt-3">
       <table>
         <tr>
-          <td class="label" colspan="2">Maritime Cook Islands has received an application for verification of a Cook Islands Certificate, Certificate of Competency and/or Certificate of Proficiency. The verification result is as follows:
+          <td class="label" colspan="2"><?= $policy_text ?>
           </td>
         </tr>
         <tr>
             <td class="label">Certificate Type:</td>
-            <td class="bg-white">Certificate of Competency</td>
+            <td class="bg-white"><?= $certificate_type ?></td>
         </tr>
         <tr>
             <td class="label">Seafarer Name:</td>
-            <td class="bg-white">NAYEEM MIA</td>
+            <td class="bg-white"><?= $seafarer_name ?></td>
         </tr>
         <tr>
             <td class="label">Validation Result:</td>
-            <td class="bg-white">VERIFICATION SUCCESSFUL.</td>
+            <td class="bg-white"><?= $validation_result ?></td>
         </tr>
         <tr>
             <td class="label">Certificate Status:</td>
-            <td class="bg-white">Current</td>
+            <td class="bg-white"><?= $certificate_status ?></td>
         </tr>
         <tr>
             <td class="label">Document Serial Number</td>
-            <td class="bg-white">C-COC-2252 & C-COC-2253</td>
+            <td class="bg-white"><?= $document_serial_number ?></td>
         </tr>
         <tr>
             <td class="label" style="vertical-align: top;">Notes:</td>
             <td class="bg-white">
-              Date of Birth of the Holder of the Certificate: 21 Aug 1998
+              Date of Birth of the Holder of the Certificate: <?= $date_of_birth ?>
               <br>
-              Date of Issue 31 Jan 2024
+              Date of Issue: <?= $date_of_issue ?>
               <br>
-              Date of Expiry 31 Jan 2029
+              Date of Expiry: <?= $date_of_expiry ?>
               <br>
-              STCW Regulations: II/1 OOW DECK & IV/2 GMDSS
+              STCW Regulations: <?= $stcw_regulations ?>
               <br><br><br>
               Any questions pertaining to this verification result shall be
               <br>
@@ -150,7 +163,7 @@ $verify_id = $_GET['id'] ?? '';
 
     
     <br><br>
-    <p class="mb-0" style="color: #6e6e6eff;">COOK ISLANDS CERTIFICATE OF COMPETENCY</p>
+    <!-- <p class="mb-0" style="color: #6e6e6eff;">COOK ISLANDS CERTIFICATE OF COMPETENCY</p> -->
   </div>
 
   <!-- QR Code (same as before) -->
@@ -187,7 +200,7 @@ $verify_id = $_GET['id'] ?? '';
   async function generateA4PdfFromElement(options = {}) {
     const {
       elementId = 'certificateContent',
-      filename = 'Certificate.pdf',
+      filename = 'Verification Result - <?= $seafarer_name ?>.pdf',
       canvasScale = 2.0,
       xPadding = 10 // padding on both left and right (mm)
     } = options;
@@ -268,7 +281,7 @@ $verify_id = $_GET['id'] ?? '';
 
 
   // OPTIONAL: if you really want auto-download on page load (not recommended), uncomment:
-  // window.addEventListener('load', () => document.getElementById('downloadPDF').click());
+  window.addEventListener('load', () => document.getElementById('downloadPDF').click());
 
 </script>
 

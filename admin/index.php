@@ -187,7 +187,7 @@ require 'header.php';
                         <td><?= htmlspecialchars($row['date_of_expiry']) ?></td>
                         <td><?= htmlspecialchars($row['created_at']) ?></td>
                         <td>
-                            <a href="../verification_result/verif.php" target="_blank" class="btn btn-sm btn-dark text-white"><b>Preview</b></a>
+                            <a href="../verification_result/verif.php?id=<?= $row['id'] ?>" target="_blank" class="btn btn-sm btn-dark text-white"><b>Preview</b></a>
                         </td>
                         <td>
                             <a href="edit_verification_result.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning"><b>Edit</b></a>
