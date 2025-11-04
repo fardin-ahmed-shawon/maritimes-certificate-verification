@@ -273,7 +273,7 @@ $stcw_regulations = $data['stcw_regulations'] ?? '';
   document.getElementById('downloadPDF').addEventListener('click', async () => {
     await generateA4PdfFromElement({
       elementId: 'certificateContent',
-      filename: 'Certificate.pdf',
+      filename: 'Verification Result - <?= $seafarer_name ?>.pdf',
       canvasScale: 2.5,
       xPadding: 7 // adjust padding here
     });

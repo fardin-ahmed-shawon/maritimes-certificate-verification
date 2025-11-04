@@ -397,7 +397,7 @@ $stmt->close();
   async function generateA4PdfFromElement(options = {}) {
     const {
       elementId = 'certificateContent',
-      filename = 'Certificate.pdf',
+      filename = 'Certificate - <?= htmlspecialchars($full_name) ?>.pdf',
       canvasScale = 2.0,
       xPadding = 10 // padding on both left and right (mm)
     } = options;
@@ -470,7 +470,7 @@ $stmt->close();
   document.getElementById('downloadPDF').addEventListener('click', async () => {
     await generateA4PdfFromElement({
       elementId: 'certificateContent',
-      filename: 'Certificate.pdf',
+      filename: 'Certificate - <?= htmlspecialchars($full_name) ?>.pdf',
       canvasScale: 2.5,
       xPadding: 7 // adjust padding here
     });
