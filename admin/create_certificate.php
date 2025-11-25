@@ -12,6 +12,16 @@ require 'header.php';
             <div style="text-align: center; display: flex; align-items: center; justify-content: center; width: 100px; height: 100px; border: 1px solid #ccc">QR CODE AREA</div>
         </div>
 
+        <!-- Certificate Of -->
+        <div class="mt-3">
+            <table class="table table-bordered">
+                <tr>
+                    <th>CERTIFICATE OF:</th>
+                    <td><input type="text" name="certificate_of" class="form-control" placeholder="Certificate Of Competency/Proficieny/Others"></td>
+                </tr>
+            </table>
+        </div>
+
         <!-- Certificate Type & Policy -->
         <div class="mt-3">
             <table class="table table-bordered">

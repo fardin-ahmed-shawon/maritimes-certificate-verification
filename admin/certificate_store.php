@@ -17,6 +17,7 @@ function uploadFile($file, $uploadDir = './uploads/') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Collect certificate POST data
+    $certificate_of = $_POST['certificate_of'] ?? '';
     $certificate_type = $_POST['certificate_type'] ?? '';
     $policy_text = $_POST['policy_text'] ?? '';
     $full_name = $_POST['full_name'] ?? '';
@@ -49,12 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Insert into certificates
     $stmt = $conn->prepare("INSERT INTO certificates 
-        (certificate_id, certificate_type, policy_text, profile_photo, signature_photo, full_name, date_of_birth, certificate_number, nationality, date_of_issue, date_of_expiry, place_of_issue, registry_seal_img, authority_signature_img, title, name)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        (certificate_id, certificate_of, certificate_type, policy_text, profile_photo, signature_photo, full_name, date_of_birth, certificate_number, nationality, date_of_issue, date_of_expiry, place_of_issue, registry_seal_img, authority_signature_img, title, name)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     
     $stmt->bind_param(
-        "ssssssssssssssss",
+        "sssssssssssssssss",
         $certificate_id,
+        $certificate_of,
         $certificate_type,
         $policy_text,
         $profile_photo,

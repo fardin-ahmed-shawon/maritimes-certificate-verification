@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $place_of_issue       = $_POST['place_of_issue'] ?? '';
     $title                = $_POST['title'] ?? '';
     $name                 = $_POST['name'] ?? '';
+    $certificate_of     = $_POST['certificate_of'] ?? '';
 
     // Upload files
     function uploadFile($file, $oldFile = null) {
@@ -77,13 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Update main certificate
     $updateSql = "UPDATE certificates SET 
-        certificate_type=?, policy_text=?, full_name=?, date_of_birth=?, certificate_number=?, nationality=?, 
+        certificate_of=?, certificate_type=?, policy_text=?, full_name=?, date_of_birth=?, certificate_number=?, nationality=?, 
         date_of_issue=?, date_of_expiry=?, place_of_issue=?, profile_photo=?, signature_photo=?, registry_seal_img=?, 
         authority_signature_img=?, title=?, name=? WHERE id=?";
     $stmtUpdate = $conn->prepare($updateSql);
     $stmtUpdate->bind_param(
-        "sssssssssssssssi",
-        $certificate_type, $policy_text, $full_name, $date_of_birth, $certificate_number, $nationality,
+        "ssssssssssssssssi",
+        $certificate_type, $certificate_of, $policy_text, $full_name, $date_of_birth, $certificate_number, $nationality,
         $date_of_issue, $date_of_expiry, $place_of_issue, $profile_photo, $signature_photo, $registry_seal_img,
         $authority_signature_img, $title, $name, $certId
     );
@@ -139,6 +140,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <img src="../certificate_generate/image/certificatelogo.png" style="width:100px">
             <h4>COOK ISLANDS SHIPS REGISTRY</h4>
             <div style="width:100px;height:100px;border:1px solid #ccc;display:flex;align-items:center;justify-content:center;">QR CODE AREA</div>
+        </div>
+
+        <!-- Certificate Of -->
+        <div class="mt-3">
+            <table class="table table-bordered">
+                <tr>
+                    <th>CERTIFICATE OF:</th>
+                    <td><input type="text" name="certificate_of" class="form-control" placeholder="Certificate Of Competency/Proficieny/Others" value="<?= htmlspecialchars($cert['certificate_of']) ?>"></td>
+                </tr>
+            </table>
         </div>
 
         <!-- Certificate Type & Policy -->
